@@ -1,8 +1,7 @@
-import Head from 'next/head'
+import Head from "next/head";
+import Header from "../components/Header";
 
-
-export default function Home() {
-
+const Home = () => {
   return (
     <>
       <Head>
@@ -11,12 +10,11 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main >
-        <h1 className=' text-4xl text-red-400'>Hello WOrld</h1>
-        <h2 className='text-3xl font-bold underline text-sky-300'>Hello World</h2>
-        <p>Bangladesh</p>
-      
+      <main>
+        <Header />
       </main>
     </>
-  )
-}
+  );
+};
+
+export default Home;
