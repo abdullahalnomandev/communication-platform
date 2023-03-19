@@ -14,6 +14,7 @@ export default function Home() {
       <main >
         <h1 className=' text-4xl text-red-400'>Hello WOrld</h1>
         <h2 className='text-3xl font-bold underline text-sky-300'>Hello World</h2>
+        <p>Bangladesh</p>
       
       </main>
     </>
