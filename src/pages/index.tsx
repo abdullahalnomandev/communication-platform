@@ -1,6 +1,16 @@
+import { signIn, signOut, useSession } from "next-auth/react";
 import Head from "next/head";
 
 const Home = () => {
+  const { data: session }: any = useSession();
+  if (session) {
+    return (
+      <>
+        Signed in as {session.user.email} <br />
+        <button onClick={() => signOut()}>Sign out</button>
+      </>
+    );
+  }
   return (
     <>
       <Head>
@@ -11,6 +21,7 @@ const Home = () => {
       </Head>
       <main>
         <h1>Home Route</h1>
+        <button onClick={() => signIn()}>Sign in</button>
       </main>
     </>
   );
