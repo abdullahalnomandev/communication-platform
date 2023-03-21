@@ -1,16 +1,53 @@
-import { signIn, signOut, useSession } from "next-auth/react";
+import { DocumentNode } from "graphql";
+import gql from "graphql-tag";
+import { signIn } from "next-auth/react";
 import Head from "next/head";
+import { useQuery, UseQueryResult } from "react-query";
+import client from "../../services/graphql";
+interface Post {
+  userId?: number;
+  id: number;
+  title: string;
+  body: string;
+  completed?: boolean;
+}
+interface User {
+  id: number;
+  name: string;
+  role: string;
+  email: string;
+}
 
 const Home = () => {
-  const { data: session }: any = useSession();
-  if (session) {
-    return (
-      <>
-        Signed in as {session.user.email} <br />
-        <button onClick={() => signOut()}>Sign out</button>
-      </>
-    );
-  }
+  const GET_USERS_DATA = gql`
+    query {
+      users {
+        id
+        name
+        email
+        role
+      }
+    }
+  `;
+
+  const useFetch = <T,>(queryKey: (string | number)[], query: DocumentNode): UseQueryResult<{ users: T }> => {
+    return useQuery(queryKey, async () => {
+      const data = await client.request<User>(query);
+      return data;
+    });
+  };
+
+  const { data, isLoading, isError } = useFetch<User[]>(["noman", 9], GET_USERS_DATA);
+
+  // if (isLoading) {
+  //   return (
+  //     <div>
+  //       <p>Loading...</p>
+  //     </div>
+  //   );
+  // }
+
+  console.log(data);
 
   return (
     <>
@@ -22,6 +59,16 @@ const Home = () => {
       </Head>
       <main>
         <h1>Home Route</h1>
+        {
+          // eslint-disable-next-line react/jsx-key
+          data?.users.map(({ id, name, email, role }, i) => (
+            <div key={id}>
+              <p>{name}</p>
+              <p>{email}</p>
+              <p className="text-red-500">{role}</p>
+            </div>
+          ))
+        }
         <button onClick={() => signIn()}>Sign in</button>
       </main>
     </>

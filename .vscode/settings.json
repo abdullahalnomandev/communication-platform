@@ -12,5 +12,8 @@
     "source.organizeImports": true
   },
   "emmet.triggerExpansionOnTab": true,
-  "editor.formatOnSave": true
+  "editor.formatOnSave": true,
+  "prettier.printWidth": 160,
+  "editor.rename.enablePreview": false,
+  "workbench.editor.enablePreview": false
 }
