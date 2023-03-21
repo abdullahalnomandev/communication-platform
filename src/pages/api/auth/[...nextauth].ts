@@ -26,7 +26,8 @@ export const authOptions = {
           "x-hasura-allowed-roles": ["user"],
           "x-hasura-default-role": "user",
           "x-hasura-role": "user",
-          "x-hasura-user-id": token.sub
+          "x-hasura-user-id": token.sub,
+          "X-Hasura-Account-Id": "1"
         }
       };
     },
