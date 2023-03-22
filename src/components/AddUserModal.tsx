@@ -1,5 +1,8 @@
 import { SubmitHandler, useForm } from "react-hook-form";
-
+import { useMutation } from "react-query";
+import { INSERT_USER_ONE } from "../../qql-api/user";
+import client from "../../services/graphql";
+import { IUser } from "../../tyeps";
 interface IProps {
   showModal: Boolean;
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
@@ -13,10 +16,31 @@ type FormValues = {
 };
 const AddUserModal: React.FC<IProps> = ({ showModal, setShowModal }) => {
   const { register, handleSubmit, reset } = useForm<FormValues>();
+
   const onSubmit: SubmitHandler<FormValues> = (data) => {
     console.log(data);
+
     reset();
   };
+
+  const mutation = useMutation(async (variable: {}) => {
+    const data = await client.request(INSERT_USER_ONE, variable);
+
+    console.log("the formal data", data);
+
+    return data;
+  });
+
+  const handleSubmitt = () => {
+    const variables: IUser = {
+      name: "agent assign test6",
+      email: "email12RR2@gmail.com",
+      mobile: "01741581512",
+    };
+    mutation.mutate(variables);
+  };
+
+  console.log("error", mutation.isError, "succcess", mutation.isSuccess);
 
   return (
     <>
@@ -29,21 +53,20 @@ const AddUserModal: React.FC<IProps> = ({ showModal, setShowModal }) => {
                 {/*header*/}
                 <div className="flex items-start justify-between p-5 border-b border-solid border-slate-200 rounded-t">
                   <h3 className="text-3xl font-semibold">ADD USER</h3>
+                  <button onClick={() => handleSubmitt()} className="bg-red-600">
+                    ADD
+                  </button>
                   <button
                     className="p-1 ml-auto bg-transparent border-0 text-black opacity-5 float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
                     onClick={() => setShowModal(false)}
                   >
-                    <span className="bg-transparent text-black opacity-5 h-6 w-6 text-2xl block outline-none focus:outline-none">
-                      ×
-                    </span>
+                    <span className="bg-transparent text-black opacity-5 h-6 w-6 text-2xl block outline-none focus:outline-none">×</span>
                   </button>
                 </div>
                 {/*body*/}
                 <div className="relative p-6 flex-auto">
                   <form onSubmit={handleSubmit(onSubmit)}>
-                    <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                      Your Name
-                    </label>
+                    <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your Name</label>
                     <div className="relative mb-6">
                       <input
                         {...register("name")}
@@ -52,9 +75,7 @@ const AddUserModal: React.FC<IProps> = ({ showModal, setShowModal }) => {
                       />
                     </div>
 
-                    <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                      Your Email
-                    </label>
+                    <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your Email</label>
                     <div className="relative mb-6">
                       <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                         <svg
@@ -76,9 +97,7 @@ const AddUserModal: React.FC<IProps> = ({ showModal, setShowModal }) => {
                         placeholder="name@flowbite.com"
                       />
                     </div>
-                    <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                      Mobile Number
-                    </label>
+                    <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Mobile Number</label>
                     <div className="relative mb-6">
                       <input
                         type="tel"
@@ -87,9 +106,7 @@ const AddUserModal: React.FC<IProps> = ({ showModal, setShowModal }) => {
                         placeholder="Write user name"
                       />
                     </div>
-                    <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                      User Role
-                    </label>
+                    <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">User Role</label>
                     <div className="relative mb-6 cursor-pointer border-blue-500">
                       <select
                         defaultValue="member"
@@ -112,7 +129,7 @@ const AddUserModal: React.FC<IProps> = ({ showModal, setShowModal }) => {
                       <input
                         type="submit"
                         value="Add User"
-                        className="bg-blue-500 text-white active:bg-blue-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                        className="bg-blue-500 text-white active:bg-blue-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 cursor-pointer"
                       />
                     </div>
                   </form>

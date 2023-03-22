@@ -1,43 +1,27 @@
-import { DocumentNode } from "graphql";
 import gql from "graphql-tag";
 import { signIn } from "next-auth/react";
 import Head from "next/head";
-import { useQuery, UseQueryResult } from "react-query";
-import client from "../../services/graphql";
-interface Post {
-  userId?: number;
-  id: number;
-  title: string;
-  body: string;
-  completed?: boolean;
-}
-interface User {
-  id: number;
-  name: string;
-  role: string;
-  email: string;
-}
+import useFetch from "../../hooks/useFatch";
+import { GET_USERS_DATA } from "../../qql-api/user";
+import { IUser } from "../../tyeps";
 
 const Home = () => {
-  const GET_USERS_DATA = gql`
-    query {
-      users {
+  const DELETE_USER_BY_ID = gql`
+    mutation DELETE_USER($user_id: bigint!) {
+      payload: delete_users_by_pk(id: $user_id) {
         id
-        name
         email
-        role
+        name
       }
     }
   `;
 
-  const useFetch = <T,>(queryKey: (string | number)[], query: DocumentNode): UseQueryResult<{ users: T }> => {
-    return useQuery(queryKey, async () => {
-      const data = await client.request<User>(query);
-      return data;
-    });
-  };
+  const { data, isLoading, isError } = useFetch<IUser[]>(["noman", 9], GET_USERS_DATA, { limit: 10, offset: 0 });
 
-  const { data, isLoading, isError } = useFetch<User[]>(["noman", 9], GET_USERS_DATA);
+  // DELETE USER
+  const handleDeleteClick = (id: number) => {
+    console.log(id);
+  };
 
   // if (isLoading) {
   //   return (
@@ -61,11 +45,13 @@ const Home = () => {
         <h1>Home Route</h1>
         {
           // eslint-disable-next-line react/jsx-key
-          data?.users.map(({ id, name, email, role }, i) => (
-            <div key={id}>
-              <p>{name}</p>
-              <p>{email}</p>
-              <p className="text-red-500">{role}</p>
+          data?.payload?.map(({ id, name, email, role }, i) => (
+            <div key={id} className="flex justify-center items-center gap-y-20">
+              <p>Id.: {id}:</p>
+              <p className="text-green-300">NAME: {name}</p>
+              <p className="text-orange-300">{email}</p>
+              <p className="text-blue-500">{role}</p>
+              <button className=" text-red-500 px-3 py-2  rounded bg-orange-300">Delete</button>
             </div>
           ))
         }

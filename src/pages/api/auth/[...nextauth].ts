@@ -24,8 +24,8 @@ export const authOptions = {
         ...token,
         "https://hasura.io/jwt/claims": {
           "x-hasura-allowed-roles": ["administrator", "manager", "member"],
-          "x-hasura-Default-Role": "member",
-          "x-hasura-User-Role": "member",
+          "x-hasura-Default-Role": "administrator",
+          "x-hasura-User-Role": "administrator",
           "x-hasura-user-Id": "2",
           "X-Hasura-Account-Id": "1",
         },
