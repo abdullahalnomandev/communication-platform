@@ -16,11 +16,16 @@ type FormValues = {
   role: string;
 };
 const AddUserModal: React.FC<IProps> = ({ showModal, setShowModal }) => {
+<<<<<<< HEAD
   const [user, setUser] = useState({} as IUser);
+=======
+  const [users, setUsers] = useState({});
+>>>>>>> 4460d7b3daac4c7f8e9ade48f8bc661b4d31fa7e
 
   const { register, handleSubmit, reset } = useForm<FormValues>();
 
   const mutation = useMutation(async (variable: {}) => {
+<<<<<<< HEAD
     const dataInfo = await client.request(INSERT_USER_ONE, variable);
     return dataInfo;
   });
@@ -35,6 +40,27 @@ const AddUserModal: React.FC<IProps> = ({ showModal, setShowModal }) => {
   };
 
   console.log("error", mutation.isError, mutation.error, "succcess", mutation.isSuccess);
+=======
+    const data = await client.request(INSERT_USER_ONE, variable);
+
+    console.log("the formal data", data);
+
+    return data;
+  });
+
+  const createUser = (user: IUser) => {
+    mutation.mutate(user);
+  };
+
+  const onSubmit: SubmitHandler<FormValues> = (data) => {
+    setUsers(data);
+    console.log("data", data);
+    createUser(data);
+    reset();
+  };
+
+  console.log("error", mutation.isError, "succcess", mutation.isSuccess);
+>>>>>>> 4460d7b3daac4c7f8e9ade48f8bc661b4d31fa7e
 
   return (
     <>
@@ -47,6 +73,10 @@ const AddUserModal: React.FC<IProps> = ({ showModal, setShowModal }) => {
                 {/*header*/}
                 <div className="flex items-start justify-between p-5 border-b border-solid border-slate-200 rounded-t">
                   <h3 className="text-3xl font-semibold">ADD USER</h3>
+<<<<<<< HEAD
+=======
+                  <button className="bg-red-600">ADD</button>
+>>>>>>> 4460d7b3daac4c7f8e9ade48f8bc661b4d31fa7e
                   <button
                     className="p-1 ml-auto bg-transparent border-0 text-black opacity-5 float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
                     onClick={() => setShowModal(false)}
@@ -104,6 +134,7 @@ const AddUserModal: React.FC<IProps> = ({ showModal, setShowModal }) => {
                         {...register("role")}
                         className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                       >
+                        <option value="administrator">Administrator</option>
                         <option value="manager">Manager</option>
                         <option value="member">Member</option>
                       </select>
