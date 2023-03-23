@@ -3,7 +3,6 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { useMutation } from "react-query";
 import { INSERT_USER_ONE } from "../../qql-api/user";
 import client from "../../services/graphql";
-import { IUser } from "../../tyeps";
 interface IProps {
   showModal: Boolean;
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
@@ -22,20 +21,17 @@ const AddUserModal: React.FC<IProps> = ({ showModal, setShowModal }) => {
 
   const mutation = useMutation(async (variable: {}) => {
     const data = await client.request(INSERT_USER_ONE, variable);
-
-    console.log("the formal data", data);
-
     return data;
   });
 
-  const createUser = (user: IUser) => {
-    mutation.mutate(user);
+  const createUser = () => {
+    mutation.mutate(users);
   };
 
   const onSubmit: SubmitHandler<FormValues> = (data) => {
     setUsers(data);
     console.log("data", data);
-    createUser(data);
+    createUser();
     reset();
   };
 
