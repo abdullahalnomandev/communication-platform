@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useMutation } from "react-query";
 import { INSERT_USER_ONE } from "../../qql-api/user";
@@ -15,32 +16,25 @@ type FormValues = {
   role: string;
 };
 const AddUserModal: React.FC<IProps> = ({ showModal, setShowModal }) => {
+  const [user, setUser] = useState({} as IUser);
+
   const { register, handleSubmit, reset } = useForm<FormValues>();
 
-  const onSubmit: SubmitHandler<FormValues> = (data) => {
-    console.log(data);
+  const mutation = useMutation(async (variable: {}) => {
+    const dataInfo = await client.request(INSERT_USER_ONE, variable);
+    return dataInfo;
+  });
 
+  const handleSubmitUser = async () => {
+    await mutation.mutate({ ...user, administrator: "administrator", email: "xyz@gmail.com" });
+  };
+  const onSubmit: SubmitHandler<FormValues> = (data) => {
+    setUser(data);
+    handleSubmitUser();
     reset();
   };
 
-  const mutation = useMutation(async (variable: {}) => {
-    const data = await client.request(INSERT_USER_ONE, variable);
-
-    console.log("the formal data", data);
-
-    return data;
-  });
-
-  const handleSubmitt = () => {
-    const variables: IUser = {
-      name: "agent assign test6",
-      email: "email12RR2@gmail.com",
-      mobile: "01741581512",
-    };
-    mutation.mutate(variables);
-  };
-
-  console.log("error", mutation.isError, "succcess", mutation.isSuccess);
+  console.log("error", mutation.isError, mutation.error, "succcess", mutation.isSuccess);
 
   return (
     <>
@@ -53,9 +47,6 @@ const AddUserModal: React.FC<IProps> = ({ showModal, setShowModal }) => {
                 {/*header*/}
                 <div className="flex items-start justify-between p-5 border-b border-solid border-slate-200 rounded-t">
                   <h3 className="text-3xl font-semibold">ADD USER</h3>
-                  <button onClick={() => handleSubmitt()} className="bg-red-600">
-                    ADD
-                  </button>
                   <button
                     className="p-1 ml-auto bg-transparent border-0 text-black opacity-5 float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
                     onClick={() => setShowModal(false)}
