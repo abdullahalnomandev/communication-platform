@@ -1,16 +1,37 @@
-import { signIn, signOut, useSession } from "next-auth/react";
+import gql from "graphql-tag";
+import { signIn } from "next-auth/react";
 import Head from "next/head";
+import useFetch from "../../hooks/useFatch";
+import { GET_USERS_DATA } from "../../qql-api/user";
+import { IUser } from "../../tyeps";
 
 const Home = () => {
-  const { data: session }: any = useSession();
-  if (session) {
-    return (
-      <>
-        Signed in as {session.user.email} <br />
-        <button onClick={() => signOut()}>Sign out</button>
-      </>
-    );
-  }
+  const DELETE_USER_BY_ID = gql`
+    mutation DELETE_USER($user_id: bigint!) {
+      payload: delete_users_by_pk(id: $user_id) {
+        id
+        email
+        name
+      }
+    }
+  `;
+
+  const { data, isLoading, isError } = useFetch<IUser[]>(["noman", 9], GET_USERS_DATA, { limit: 10, offset: 0 });
+
+  // DELETE USER
+  const handleDeleteClick = (id: number) => {
+    console.log(id);
+  };
+
+  // if (isLoading) {
+  //   return (
+  //     <div>
+  //       <p>Loading...</p>
+  //     </div>
+  //   );
+  // }
+
+  console.log(data);
 
   return (
     <>
@@ -22,6 +43,18 @@ const Home = () => {
       </Head>
       <main>
         <h1>Home Route</h1>
+        {
+          // eslint-disable-next-line react/jsx-key
+          data?.payload?.map(({ id, name, email, role }, i) => (
+            <div key={id} className="flex justify-center items-center gap-y-20">
+              <p>Id.: {id}:</p>
+              <p className="text-green-300">NAME: {name}</p>
+              <p className="text-orange-300">{email}</p>
+              <p className="text-blue-500">{role}</p>
+              <button className=" text-red-500 px-3 py-2  rounded bg-orange-300">Delete</button>
+            </div>
+          ))
+        }
         <button onClick={() => signIn()}>Sign in</button>
       </main>
     </>

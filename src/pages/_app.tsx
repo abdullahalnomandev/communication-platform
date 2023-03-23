@@ -1,8 +1,9 @@
 import { SessionProvider } from "next-auth/react";
 import type { AppProps } from "next/app";
+import ReactQueryProvider from "../../ReactQueryProvider/";
+import Layout from "../components/Layout";
 import "../styles/globals.css";
 
-import Layout from "../components/Layout";
 export default function App({
   Component,
   pageProps: { session, ...pageProps },
@@ -10,7 +11,9 @@ export default function App({
   return (
     <Layout>
       <SessionProvider session={session}>
-        <Component {...pageProps} />
+        <ReactQueryProvider>
+          <Component {...pageProps} />
+        </ReactQueryProvider>
       </SessionProvider>
     </Layout>
   );
