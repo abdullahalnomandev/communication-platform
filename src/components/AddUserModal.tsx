@@ -28,29 +28,15 @@ const AddUserModal: React.FC<IProps> = ({ showModal, setShowModal }) => {
     return data;
   });
 
+  const createUser = (user: IUser) => {
+    mutation.mutate(user);
+  };
+
   const onSubmit: SubmitHandler<FormValues> = (data) => {
     setUsers(data);
     console.log("data", data);
-
-    const variables: IUser = {
-      name: "testingFOR",
-      email: "testingFOr@gmail.com",
-      mobile: "01741581512",
-      role: "administrator"
-    };
-    mutation.mutate(data);
-
+    createUser(data);
     reset();
-  };
-
-  const handleSubmitt = () => {
-    const variables: IUser = {
-      name: "Bangladesh11",
-      email: "bangladesh11@gmail.com",
-      mobile: "01741581512",
-      role: "administrator"
-    };
-    mutation.mutate(variables);
   };
 
   console.log("error", mutation.isError, "succcess", mutation.isSuccess);
@@ -66,9 +52,7 @@ const AddUserModal: React.FC<IProps> = ({ showModal, setShowModal }) => {
                 {/*header*/}
                 <div className="flex items-start justify-between p-5 border-b border-solid border-slate-200 rounded-t">
                   <h3 className="text-3xl font-semibold">ADD USER</h3>
-                  <button onClick={() => handleSubmitt()} className="bg-red-600">
-                    ADD
-                  </button>
+                  <button className="bg-red-600">ADD</button>
                   <button
                     className="p-1 ml-auto bg-transparent border-0 text-black opacity-5 float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
                     onClick={() => setShowModal(false)}
