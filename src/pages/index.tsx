@@ -1,4 +1,3 @@
-import gql from "graphql-tag";
 import { signIn } from "next-auth/react";
 import Head from "next/head";
 import useFetch from "../../hooks/useFatch";
@@ -6,33 +5,7 @@ import { GET_USERS_DATA } from "../../qql-api/user";
 import { IUser } from "../../tyeps";
 
 const Home = () => {
-  const DELETE_USER_BY_ID = gql`
-    mutation DELETE_USER($user_id: bigint!) {
-      payload: delete_users_by_pk(id: $user_id) {
-        id
-        email
-        name
-      }
-    }
-  `;
-
   const { data, isLoading, isError } = useFetch<IUser[]>(["noman", 9], GET_USERS_DATA, { limit: 10, offset: 0 });
-
-  // DELETE USER
-  const handleDeleteClick = (id: number) => {
-    console.log(id);
-  };
-
-  // if (isLoading) {
-  //   return (
-  //     <div>
-  //       <p>Loading...</p>
-  //     </div>
-  //   );
-  // }
-
-  console.log(data);
-
   return (
     <>
       <Head>

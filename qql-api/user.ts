@@ -13,11 +13,9 @@ export const GET_USERS_DATA = gql`
 `;
 
 export const DELETE_USER_BY_ID = gql`
-  mutation DELETE_USER($user_id: bigint!) {
-    payload: delete_users_by_pk(id: $user_id) {
+  mutation DELETE_USER_BY_ID($user_id: bigint!) {
+    delete_POC_users_by_pk(id: $user_id) {
       id
-      email
-      name
     }
   }
 `;

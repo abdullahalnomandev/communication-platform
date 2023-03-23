@@ -4,10 +4,7 @@ import ReactQueryProvider from "../../ReactQueryProvider/";
 import Layout from "../components/Layout";
 import "../styles/globals.css";
 
-export default function App({
-  Component,
-  pageProps: { session, ...pageProps },
-}: AppProps) {
+export default function App({ Component, pageProps: { session, ...pageProps } }: AppProps) {
   return (
     <Layout>
       <SessionProvider session={session}>
