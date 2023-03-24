@@ -11,6 +11,7 @@ const HomePage = () => {
       </Head>
       <main>
         <Home />
+        {/* <UserEntryPage /> */}
       </main>
     </>
   );

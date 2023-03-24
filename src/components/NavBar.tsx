@@ -10,7 +10,7 @@ const NavBar = () => {
   const router = useRouter();
   useEffect(() => {
     if (router.pathname === "/users") {
-      setColor("green");
+      setColor("#60a5fa");
     } else if (router.pathname === "/") {
       setColor("#60a5fa");
     }
@@ -47,7 +47,12 @@ const NavBar = () => {
                 </li>
               ))}
               <li className="-mt-3">
-                <button className=" rounded-md  transition hover:bg-black text-black hover:text-white bg-yellow-300 px-6 py-3">Sign In</button>
+                <button
+                  className=" rounded-md  transition hover:bg-black text-black
+                 hover:text-white bg-yellow-300 px-6 py-3"
+                >
+                  SIGN IN
+                </button>
               </li>
               {/* <div
                 onClick={pushRoute}

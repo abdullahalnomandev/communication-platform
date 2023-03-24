@@ -10,7 +10,7 @@ function ReactQueryProvider({ children }: IProps) {
   return (
     <QueryClientProvider client={queryClient}>
       {children}
-      <ReactQueryDevtools position="bottom-right" />
+      <ReactQueryDevtools position="bottom-left" />
     </QueryClientProvider>
   );
 }
