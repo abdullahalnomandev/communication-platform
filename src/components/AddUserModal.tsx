@@ -1,12 +1,13 @@
-import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { useMutation } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 import { INSERT_USER_ONE } from "../../qql-api/user";
 import client from "../../services/graphql";
+import { IUser } from "../../tyeps";
 interface IProps {
   showModal: Boolean;
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
   title: String;
+  userId: number | null | undefined;
 }
 type FormValues = {
   name: string;
@@ -14,28 +15,31 @@ type FormValues = {
   mobile: string;
   role: string;
 };
-const AddUserModal: React.FC<IProps> = ({ showModal, setShowModal }) => {
-  const [users, setUsers] = useState({});
+const AddUserModal: React.FC<IProps> = ({ showModal, setShowModal, userId }) => {
+  const queryClient = useQueryClient();
 
   const { register, handleSubmit, reset } = useForm<FormValues>();
-
-  const mutation = useMutation(async (variable: {}) => {
+  const insertData = async (variable: {}) => {
     const data = await client.request(INSERT_USER_ONE, variable);
     return data;
-  });
+  };
 
-  const createUser = () => {
-    mutation.mutate(users);
+  const { error, isError, isSuccess, mutate } = useMutation(insertData);
+
+  const createUser = (user: IUser) => {
+    mutate(user, {
+      onSuccess: () => {
+        queryClient.invalidateQueries(["getUserData", 11]);
+        setShowModal(false);
+      }
+    });
   };
 
   const onSubmit: SubmitHandler<FormValues> = (data) => {
-    setUsers(data);
-    console.log("data", data);
-    createUser();
-    reset();
+    if (!userId) {
+      createUser(data);
+    }
   };
-
-  console.log("error", mutation.isError, "succcess", mutation.isSuccess);
 
   return (
     <>
@@ -47,8 +51,7 @@ const AddUserModal: React.FC<IProps> = ({ showModal, setShowModal }) => {
               <div className="border-0 rounded-lg shadow-lg relative flex flex-col bg-white outline-none focus:outline-none md:w-[500px] sm:w-[500px] w-[350px]">
                 {/*header*/}
                 <div className="flex items-start justify-between p-5 border-b border-solid border-slate-200 rounded-t">
-                  <h3 className="text-3xl font-semibold">ADD USER</h3>
-                  <button className="bg-red-600">ADD</button>
+                  <h3 className="text-3xl font-semibold"> {userId ? "UPDATE USER" : "ADD USER"}</h3>
                   <button
                     className="p-1 ml-auto bg-transparent border-0 text-black opacity-5 float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
                     onClick={() => setShowModal(false)}
@@ -90,6 +93,8 @@ const AddUserModal: React.FC<IProps> = ({ showModal, setShowModal }) => {
                         placeholder="name@flowbite.com"
                       />
                     </div>
+                    <p className="text-red-500">{isError ? "Unique key violation,Change this email" : ""}</p>
+
                     <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Mobile Number</label>
                     <div className="relative mb-6">
                       <input
@@ -122,7 +127,7 @@ const AddUserModal: React.FC<IProps> = ({ showModal, setShowModal }) => {
                       </button>
                       <input
                         type="submit"
-                        value="Add User"
+                        value={`${userId ? "Update User" : "Add User"}`}
                         className="bg-blue-500 text-white active:bg-blue-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 cursor-pointer"
                       />
                     </div>
