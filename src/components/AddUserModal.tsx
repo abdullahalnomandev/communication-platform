@@ -1,7 +1,7 @@
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useMutation, useQueryClient } from "react-query";
 import { INSERT_USER_ONE } from "../../qql-api/user";
-import client from "../../services/graphql";
+import { getGraphQLClient } from "../../services/graphql";
 import { IUser } from "../../tyeps";
 interface IProps {
   showModal: Boolean;
@@ -20,7 +20,7 @@ const AddUserModal: React.FC<IProps> = ({ showModal, setShowModal, userId }) => 
 
   const { register, handleSubmit, reset } = useForm<FormValues>();
   const insertData = async (variable: {}) => {
-    const data = await client.request(INSERT_USER_ONE, variable);
+    const data = await (await getGraphQLClient()).request(INSERT_USER_ONE, variable);
     return data;
   };
 
