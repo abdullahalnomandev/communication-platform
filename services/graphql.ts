@@ -10,13 +10,18 @@
 // });
 
 // export default client;
-
 import { GraphQLClient } from "graphql-request";
+import { Session } from "next-auth";
 import { getSession } from "next-auth/react";
+
+interface CustomSession extends Session {
+  token?: string;
+}
 
 export const getGraphQLClient = async () => {
   const session = await getSession();
-  const accessToken = session?.token as any;
+  // const accessToken = session?.token as any;
+  const accessToken = (session as CustomSession)?.token;
   if (!accessToken) {
     alert("Authentication token not found");
   }
