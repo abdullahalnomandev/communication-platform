@@ -1,7 +1,13 @@
+import { useRouter } from "next/router";
+import { useState } from "react";
 import { BsArrowRight } from "react-icons/bs";
+import AddAccountModal from "./AddAccountModal";
 const UserEntryPage = () => {
+  const router = useRouter();
+  const [showModal, setShowModal] = useState(false);
   return (
     <div>
+      <AddAccountModal showModal={showModal} setShowModal={setShowModal} />
       <div className="user-entry text-center py-6">
         <h1 className="text-4xl">Welcome back! You look nice today.</h1>
         <p className="text-lg pt-3 text-gray-500 pb-8">Choose a workspace below to get back to working with your team.</p>
@@ -28,6 +34,7 @@ const UserEntryPage = () => {
           <img className=" h-24" src="https://interlead-experts.com/wp-content/uploads/2021/05/interlead.png" alt="Picture of the author" />
           <p>Want to use Communication Platform with a different team?</p>
           <button
+            onClick={() => setShowModal(true)}
             className=" rounded-md  transition hover:bg-black text-black
                  hover:text-white bg-yellow-300 px-6 py-3"
           >
