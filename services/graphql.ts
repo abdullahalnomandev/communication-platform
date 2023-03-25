@@ -4,9 +4,9 @@ const endpoint = process.env.HASURA_PROJECT_ENDPOINT || ("https://social-next.ha
 
 const client = new GraphQLClient(endpoint, {
   headers: {
-    // Set any required headers here, e.g. Authorization token
-    Authorization: `Bearer ${process.env.NEXT_PUBLIC_HASURA_TOKEN}` as string,
-  },
+    // Set any required headers here, e.x Authorization token
+    Authorization: `Bearer ${process.env.NEXT_PUBLIC_HASURA_TOKEN}` as string
+  }
 });
 
 export default client;
