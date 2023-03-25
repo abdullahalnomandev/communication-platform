@@ -18,16 +18,6 @@ interface IToken {
   accessToken: string | null | undefined | any;
 }
 
-<<<<<<< HEAD
-const client = new GraphQLClient(endpoint, {
-  headers: {
-    // Set any required headers here, e.x Authorization token
-    Authorization: `Bearer ${process.env.NEXT_PUBLIC_HASURA_TOKEN}` as string
-  }
-});
-
-export default client;
-=======
 export const getGraphQLClient = async () => {
   const session = await getSession();
   const accessToken: IToken = session?.token || null;
@@ -42,4 +32,3 @@ export const getGraphQLClient = async () => {
   });
   return client;
 };
->>>>>>> 46be556c64d2bd01108af5d1e4be53defa3f23be
