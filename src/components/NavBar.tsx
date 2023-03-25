@@ -1,3 +1,4 @@
+import { getSession, signIn, signOut } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -6,14 +7,22 @@ import { useEffect, useState } from "react";
 const NavBar = () => {
   const [color, setColor] = useState("yellow");
   const [isActive, setIsActive] = useState(1);
+  const [session, setSession] = useState("" as any);
 
   const router = useRouter();
+
+  const getAccessToken = async () => {
+    const sessionInfo = await getSession();
+    setSession(sessionInfo);
+  };
+
   useEffect(() => {
     if (router.pathname === "/users") {
       setColor("#60a5fa");
     } else if (router.pathname === "/") {
       setColor("#60a5fa");
     }
+    getAccessToken();
   }, [router]);
 
   const pushRoute = () => {
@@ -25,7 +34,6 @@ const NavBar = () => {
     { id: 2, path: "/users", name: "USERS" },
     { id: 3, path: "/inbox", name: "Inbox" }
   ];
-  console.log(isActive);
 
   return (
     <div className="nav mb-[0%]">
@@ -46,20 +54,33 @@ const NavBar = () => {
                   <Link href={path}>{name}</Link>
                 </li>
               ))}
-              <li className="-mt-3">
-                <button
-                  className=" rounded-md  transition hover:bg-black text-black
-                 hover:text-white bg-yellow-300 px-6 py-3"
+              {/* {session && (
+                <div
+                  onClick={pushRoute}
+                  className=" mb-8 flex h-11 w-11 cursor-pointer items-center justify-center rounded-full bg-gray-400 text-center md:order-2"
                 >
-                  SIGN IN
-                </button>
+                  <BiMessageRoundedDots className=" text-3xl text-white " />
+                </div>
+              )} */}
+              <li className="-mt-3">
+                {session ? (
+                  <button
+                    onClick={() => signOut()}
+                    className=" rounded-md  transition hover:bg-black text-black
+                 hover:text-white bg-yellow-300 px-6 py-3"
+                  >
+                    Log Out
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => signIn("google")}
+                    className=" rounded-md  transition hover:bg-black text-black
+                 hover:text-white bg-yellow-300 px-6 py-3"
+                  >
+                    Sign In
+                  </button>
+                )}
               </li>
-              {/* <div
-                onClick={pushRoute}
-                className=" mb-8 flex h-11 w-11 cursor-pointer items-center justify-center rounded-full bg-gray-400 text-center md:order-2"
-              >
-                <BiMessageRoundedDots className=" text-3xl text-white " />
-              </div> */}
             </ul>
           </div>
         </div>

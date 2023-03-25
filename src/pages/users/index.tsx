@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useMutation, useQueryClient } from "react-query";
 import useFetch from "../../../hooks/useFatch";
 import { DELETE_USER_BY_ID, GET_USERS_DATA } from "../../../qql-api/user";
-import client from "../../../services/graphql";
+import { getGraphQLClient } from "../../../services/graphql";
 import { IUser } from "../../../tyeps";
 import AddUserModal from "../../components/AddUserModal";
 
@@ -15,13 +15,13 @@ const Users = () => {
 
   const deleteUserById = useMutation(
     async (id: number | undefined) => {
-      const data = await client.request(DELETE_USER_BY_ID, { user_id: id });
+      const data = await (await getGraphQLClient()).request(DELETE_USER_BY_ID, { user_id: id });
       return data;
     },
     {
       onSuccess: () => {
         queryClient.invalidateQueries(["getUserData", 11]);
-      },
+      }
     }
   );
 

@@ -1,3 +1,5 @@
+import { signIn } from "next-auth/react";
+
 const Home = () => {
   return (
     <div className=" bg-blue-400 min-h-screen">
@@ -11,7 +13,10 @@ const Home = () => {
             <p className=" text-white pt-8 mb-11">
               Connect the right people, find anything you need and automate <br /> the rest. That’s work in Slack, your productivity platform.
             </p>
-            <button className=" bg-yellow-300  py-4 px-6 rounded-sm-bold text-black font-bold rounded-sm text-lg mb-4">SIGN UP WITH GOOGLE</button>
+            <button onClick={() => signIn("google")} className=" bg-yellow-300  py-4 px-6 rounded-sm-bold text-black font-bold rounded-sm text-lg mb-4">
+              SIGN UP WITH GOOGLE
+            </button>
+
             <p>Communication Platform is free to try for as long as you’d like</p>
           </div>
         </div>

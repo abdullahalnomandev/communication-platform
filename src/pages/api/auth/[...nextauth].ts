@@ -5,11 +5,11 @@ export const authOptions = {
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID as string,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
-    }),
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string
+    })
   ],
   session: {
-    strategy: "jwt",
+    strategy: "jwt"
   } as {},
 
   callbacks: {
@@ -27,19 +27,22 @@ export const authOptions = {
           "x-hasura-Default-Role": "administrator",
           "x-hasura-User-Role": "administrator",
           "x-hasura-user-Id": "2",
-          "X-Hasura-Account-Id": "1",
-        },
+          "X-Hasura-Account-Id": "1"
+        }
       };
     },
     async session({ session, token, user }: any) {
       const encodedToken = Jwt.sign(token, process.env.JWT_SECRET as string, {
-        algorithm: "HS256",
+        algorithm: "HS256"
       });
 
       session.id = token.id;
       session.token = encodedToken;
+      session.userId = 50;
+      session.userRole = "admin";
+      session.accountId = 5;
       return Promise.resolve(session);
-    },
-  },
+    }
+  }
 };
 export default NextAuth(authOptions);
