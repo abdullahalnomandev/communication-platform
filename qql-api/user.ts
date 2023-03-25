@@ -30,3 +30,17 @@ export const INSERT_USER_ONE = gql`
     }
   }
 `;
+
+export const FIND_USER_ONE = gql`
+  query FIND_USER_ONE($email: String!) {
+    payload: POC_users(where: { email: { _eq: $email } }) {
+      id
+      email
+      name
+      role
+      image_url
+      created_at
+      updated_at
+    }
+  }
+`;

@@ -20,16 +20,22 @@ interface CustomSession extends Session {
 
 export const getGraphQLClient = async () => {
   const session = await getSession();
-  // const accessToken = session?.token as any;
   const accessToken = (session as CustomSession)?.token;
-  if (!accessToken) {
-    alert("Authentication token not found");
+  let headers = {};
+
+  if (accessToken) {
+    headers = {
+      Authorization: `Bearer ${accessToken}`
+    };
+  } else {
+    headers = {
+      "x-hasura-admin-secret": process.env.HASURA_ADMIN_SECRET || "9VdpFn8uf2IIcavNlr1DL8M086Y3wqps6j7wZ72wpkhJza5I7xd6akeh6l3kA2bP"
+    };
   }
+
   const endpoint = process.env.HASURA_PROJECT_ENDPOINT || "https://social-next.hasura.app/v1/graphql";
   const client = new GraphQLClient(endpoint, {
-    headers: {
-      Authorization: `Bearer ${accessToken}`
-    }
-  });
+    headers: headers
+  } as any);
   return client;
 };

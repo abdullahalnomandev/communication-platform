@@ -3,11 +3,11 @@ import Head from "next/head";
 import { useState } from "react";
 import { useMutation, useQueryClient } from "react-query";
 import useFetch from "../../../hooks/useFatch";
+import HasuraApi from "../../../qql-api/HasuraApi";
 import { DELETE_USER_BY_ID, GET_USERS_DATA } from "../../../qql-api/user";
 import { getGraphQLClient } from "../../../services/graphql";
 import { IUser } from "../../../tyeps";
 import AddUserModal from "../../components/AddUserModal";
-
 const Users = () => {
   const queryClient = useQueryClient();
   const [showModal, setShowModal] = useState(false);
@@ -26,6 +26,9 @@ const Users = () => {
   );
 
   const { data } = useFetch<IUser[]>(["getUserData", 11], GET_USERS_DATA, { limit: 20, offset: 0 });
+  // const { data: getUser } = useFetch<IUser[]>(["findUserData", 11], FIND_USER_ONE, { email: "abdullahalnoman1512@gmail.com" });
+
+  HasuraApi("esha").then((data) => console.log("user", data));
 
   return (
     <>

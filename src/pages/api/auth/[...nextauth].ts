@@ -1,6 +1,19 @@
 import Jwt from "jsonwebtoken";
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
+import { FIND_USER_ONE } from "../../../../qql-api/user";
+import { getGraphQLClient } from "../../../../services/graphql";
+type IUser = {
+  payload: {
+    id: 54;
+    email: string;
+    name: string;
+    role: string;
+    image_url: null;
+    created_at: string;
+    updated_at: string;
+  }[];
+};
 export const authOptions = {
   providers: [
     GoogleProvider({
@@ -10,23 +23,37 @@ export const authOptions = {
   ],
   session: {
     strategy: "jwt"
-  } as {},
+  } as any,
 
   callbacks: {
-    async jwt({ token, user, account, profile, isNewUser }: any) {
-      const ifUserSignedIn = user ? true : false;
+    async signIn({ user, account, profile, email, credentials }: any) {
+      if (account.provider === "google") {
+        const userInfo = await (await getGraphQLClient()).request(FIND_USER_ONE, { email: user.email });
+        const logInUser = (userInfo as IUser)?.payload as any;
+        console.log(logInUser.length);
+        if (logInUser.length === 1) {
+          return true;
+        }
+      }
+      return false;
+    },
+    async jwt({ token, user, account, profile }: any) {
+      const findDbUser: IUser = await (await getGraphQLClient()).request(FIND_USER_ONE, { email: token?.email });
+      const { role, id, email, name } = findDbUser.payload[0];
+      console.log("findBdUSer", role, id, email, name);
 
+      const ifUserSignedIn = user ? true : false;
       if (ifUserSignedIn) {
-        token.id = user.id;
+        (token.userId = id), (token.role = role), (token.accountId = "5");
       }
 
       return {
         ...token,
         "https://hasura.io/jwt/claims": {
           "x-hasura-allowed-roles": ["administrator", "manager", "member"],
-          "x-hasura-Default-Role": "administrator",
-          "x-hasura-User-Role": "administrator",
-          "x-hasura-user-Id": "2",
+          "x-hasura-Default-Role": role,
+          "x-hasura-User-Role": role,
+          "x-hasura-user-Id": String(id),
           "X-Hasura-Account-Id": "1"
         }
       };
@@ -36,13 +63,19 @@ export const authOptions = {
         algorithm: "HS256"
       });
 
-      session.id = token.id;
       session.token = encodedToken;
-      session.userId = 50;
-      session.userRole = "admin";
-      session.accountId = 5;
+      session.userId = String(token.userId);
+      session.userRole = token.role;
+      session.accountId = token.accountId;
       return Promise.resolve(session);
     }
+  },
+  pages: {
+    signIn: "/auth/signin",
+    signOut: "/auth/signout",
+    error: "/error", // Error code passed in query string as ?error=
+    verifyRequest: "/auth/verify-request", // (used for check email message)
+    newUser: "/auth/new-user" // New users will be directed here on first sign in (leave the property out if not of interest)
   }
 };
 export default NextAuth(authOptions);
