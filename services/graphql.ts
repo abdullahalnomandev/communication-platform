@@ -14,13 +14,9 @@
 import { GraphQLClient } from "graphql-request";
 import { getSession } from "next-auth/react";
 
-interface IToken {
-  accessToken: string | null | undefined | any;
-}
-
 export const getGraphQLClient = async () => {
   const session = await getSession();
-  const accessToken: IToken = session?.token || null;
+  const accessToken = session?.token as any;
   if (!accessToken) {
     alert("Authentication token not found");
   }
