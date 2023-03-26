@@ -20,7 +20,11 @@ interface CustomSession extends Session {
 
 export const getGraphQLClient = async () => {
   const session = await getSession();
+
   const accessToken = (session as CustomSession)?.token;
+
+  console.log("CORE", accessToken);
+
   let headers = {};
 
   if (accessToken) {

@@ -30,7 +30,6 @@ export const authOptions = {
       if (account.provider === "google") {
         const userInfo = await (await getGraphQLClient()).request(FIND_USER_ONE, { email: user.email });
         const logInUser = (userInfo as IUser)?.payload as any;
-        console.log(logInUser.length);
         if (logInUser.length === 1) {
           return true;
         }
@@ -40,7 +39,6 @@ export const authOptions = {
     async jwt({ token, user, account, profile }: any) {
       const findDbUser: IUser = await (await getGraphQLClient()).request(FIND_USER_ONE, { email: token?.email });
       const { role, id, email, name } = findDbUser.payload[0];
-      console.log("findBdUSer", role, id, email, name);
 
       const ifUserSignedIn = user ? true : false;
       if (ifUserSignedIn) {
