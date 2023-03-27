@@ -21,6 +21,8 @@ const NavBar = () => {
       setColor("#60a5fa");
     } else if (router.pathname === "/") {
       setColor("#60a5fa");
+    } else if (router.pathname === "/inbox") {
+      setColor("#60a5fa");
     }
     getAccessToken();
   }, [router]);
@@ -32,7 +34,7 @@ const NavBar = () => {
   const route = [
     { id: 1, path: "/", name: "HOME" },
     { id: 2, path: "/users", name: "USERS" },
-    { id: 3, path: "/inbox", name: "Inbox" }
+    { id: 3, path: "/inbox", name: "Inbox" },
   ];
 
   return (

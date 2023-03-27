@@ -1,6 +1,15 @@
+import { useSession } from "next-auth/react";
 import { BsFillArrowRightCircleFill } from "react-icons/bs";
+import useFetch from "../../../hooks/useFatch";
+import { GET_MESSAGE } from "../../../qql-api/message";
+import { GET_TEAM_ONE } from "../../../qql-api/team";
+import { IMessage, ITeam } from "../../../tyeps";
 
-const Message = () => {
+interface IProps {
+  teamId: number;
+}
+
+const Message: React.FC<IProps> = ({ teamId }) => {
   const message = [
     { id: 1, message: "Hi", status: true },
     { id: 2, message: "Kmon achos?", status: false },
@@ -9,7 +18,7 @@ const Message = () => {
     {
       id: 5,
       message: "Ami asole ata babinay je toi ata korte parbi jodi babtam tor kace r jibone o astam na.",
-      status: true
+      status: true,
     },
     { id: 1, message: "Hi", status: true },
     { id: 2, message: "Kmon achos?", status: false },
@@ -18,7 +27,7 @@ const Message = () => {
     {
       id: 5,
       message: "Ami asole ata babinay je toi ata korte parbi jodi babtam tor kace r jibone o astam na.",
-      status: true
+      status: true,
     },
     { id: 1, message: "Hi", status: true },
     { id: 2, message: "Kmon achos?", status: false },
@@ -27,7 +36,7 @@ const Message = () => {
     {
       id: 5,
       message: "Ami asole ata babinay je toi ata korte parbi jodi babtam tor kace r jibone o astam na.",
-      status: true
+      status: true,
     },
     { id: 1, message: "Hi", status: true },
     { id: 2, message: "Kmon achos?", status: false },
@@ -36,18 +45,30 @@ const Message = () => {
     {
       id: 5,
       message: "Ami asole ata babinay je toi ata korte parbi jodi babtam tor kace r jibone o astam na.",
-      status: true
-    }
+      status: true,
+    },
   ];
+  console.log("conversatinId", teamId);
+
+  const { data } = useFetch<IMessage[]>(["getMessage", teamId], GET_MESSAGE, { team_id: teamId, limit: 1000, offset: 0 });
+  const { data: teamDetails } = useFetch<ITeam[]>(["getTeam", teamId], GET_TEAM_ONE, { team_id: teamId });
+  const { data: session }: any = useSession();
+
+  console.log("SESSON", session?.userId);
+  const sender = Number(session?.userId);
+
+  // const teamDetail = team;
+  const teamName = teamDetails ? teamDetails?.payload[0]?.name : "Loading....";
+
   return (
     <div className=" ">
-      <div className="nav-message-header bg-[#white] py-3 shadow-md">
+      <div className="nav-message-header bg-[#white] py-3 shadow-md mb-4">
         <div className="nav-profile">
           <div className=" flex cursor-pointer items-center justify-between  py-1 px-2 hover:bg-[#f0f2f5] md:mr-3">
             <div className="flex items-center justify-between gap-x-3 ">
               <img src="https://i.ibb.co/jLk5rtx/jpg.jpg" alt="" className="h-12 w-12 rounded-full" />
               <div className="con-list-content text-left">
-                <p className=" text-lg font-semibold tracking-normal">Abdullah Al Noman</p>
+                <p className=" text-lg font-semibold tracking-normal">{teamName}</p>
                 <p className=" text-gray-400">Active Now</p>
               </div>
             </div>
@@ -55,11 +76,16 @@ const Message = () => {
         </div>
       </div>
       <div className="message-content ">
-        <div className="content relative max-h-[420px] overflow-auto">
-          {message.map(({ message, status }) => (
+        <div className="content relative h-[700px] md:h-[700px]  overflow-auto">
+          {data?.payload?.map(({ id, text, sender_id, POC_user }) => (
             <>
-              {status && <p className="my-3 mx-2  max-w-xs rounded-2xl bg-[#f0f2f5] py-2 px-3 text-black">{message}</p>}
-              {!status && <p className=" my-3 mx-2 ml-auto   max-w-xs rounded-2xl bg-blue-600 py-2 px-3 text-white">{message}</p>}
+              {!(sender === sender_id) && (
+                <p key={id} className="pl-4 text-sm cursor-pointer text-blue-500 -pt-6">
+                  {POC_user?.name}
+                </p>
+              )}
+              {!(sender === sender_id) && <p className="my-3 mx-2  max-w-xs rounded-2xl bg-[#f0f2f5] py-2 px-3 text-black">{text}</p>}
+              {sender === sender_id && <p className=" my-3 mx-2 ml-auto   max-w-xs rounded-2xl bg-blue-600 py-2 px-3 text-white">{text}</p>}
             </>
           ))}
         </div>

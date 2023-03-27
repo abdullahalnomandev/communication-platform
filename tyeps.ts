@@ -14,3 +14,23 @@ export interface IAccount {
   created_at: string;
   updated_at: string;
 }
+
+export interface IMessage {
+  id: number;
+  text: string;
+  sender_id: number;
+  team_id: number;
+  created_at: string;
+  updated_at: string;
+  attachment: string;
+  POC_user: IUser;
+}
+export interface ITeam {
+  id: number;
+  name: string;
+  creator_id: number;
+  created_at: string;
+  account_id: number;
+  updated_at: string;
+  POC_messages: IMessage[];
+}

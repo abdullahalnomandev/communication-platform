@@ -1,122 +1,20 @@
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { AiOutlineSearch } from "react-icons/ai";
+import useFetch from "../../../hooks/useFatch";
+import { GET_TEAMS } from "../../../qql-api/team";
+import { ITeam } from "../../../tyeps";
 
-const Group = () => {
-  const conversation = [
-    {
-      id: 1,
-      name: " Abdullah Al Noman",
-      url: "https://i.ibb.co/jLk5rtx/jpg.jpg",
-      date: "Today",
-      message: " Hi cilo"
-    },
-    {
-      id: 2,
-      name: " Rakib Hossain",
-      url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTPyGNr2qL63Sfugk2Z1-KBEwMGOfycBribew&usqp=CAU",
-      date: "01:23PM",
-      message: " Acca."
-    },
-    {
-      id: 3,
-      name: " Fahima Mahjabin",
-      url: "https://i.ibb.co/ky5RV2S/esha.png",
-      date: "Yesterday",
-      message: "Mane?"
-    },
-    {
-      id: 4,
-      name: " Abdullah Al Noman",
-      url: "https://i.ibb.co/jLk5rtx/jpg.jpg",
-      date: "Today",
-      message: " Hi cilo"
-    },
-    {
-      id: 5,
-      name: " Rakib Hossain",
-      url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTPyGNr2qL63Sfugk2Z1-KBEwMGOfycBribew&usqp=CAU",
-      date: "01:23PM",
-      message: " Acca."
-    },
-    {
-      id: 6,
-      name: " Fahima Mahjabin",
-      url: "https://i.ibb.co/ky5RV2S/esha.png",
-      date: "Yesterday",
-      message: "Mane?"
-    },
-    {
-      id: 7,
-      name: " Abdullah Al Noman",
-      url: "https://i.ibb.co/jLk5rtx/jpg.jpg",
-      date: "Today",
-      message: " Hi cilo"
-    },
-    {
-      id: 8,
-      name: " Rakib Hossain",
-      url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTPyGNr2qL63Sfugk2Z1-KBEwMGOfycBribew&usqp=CAU",
-      date: "01:23PM",
-      message: " Acca."
-    },
-    {
-      id: 9,
-      name: " Fahima Mahjabin",
-      url: "https://i.ibb.co/ky5RV2S/esha.png",
-      date: "Yesterday",
-      message: "Mane?"
-    },
-    {
-      id: 10,
-      name: " Abdullah Al Noman",
-      url: "https://i.ibb.co/jLk5rtx/jpg.jpg",
-      date: "Today",
-      message: " Hi cilo"
-    },
-    {
-      id: 11,
-      name: " Rakib Hossain",
-      url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTPyGNr2qL63Sfugk2Z1-KBEwMGOfycBribew&usqp=CAU",
-      date: "01:23PM",
-      message: " Acca."
-    },
-    {
-      id: 12,
-      name: " Fahima Mahjabin",
-      url: "https://i.ibb.co/ky5RV2S/esha.png",
-      date: "Yesterday",
-      message: "Mane?"
-    },
-    {
-      id: 9,
-      name: " Fahima Mahjabin",
-      url: "https://i.ibb.co/ky5RV2S/esha.png",
-      date: "Yesterday",
-      message: "Mane?"
-    },
-    {
-      id: 10,
-      name: " Abdullah Al Noman",
-      url: "https://i.ibb.co/jLk5rtx/jpg.jpg",
-      date: "Today",
-      message: " Hi cilo"
-    },
-    {
-      id: 11,
-      name: " Rakib Hossain",
-      url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTPyGNr2qL63Sfugk2Z1-KBEwMGOfycBribew&usqp=CAU",
-      date: "01:23PM",
-      message: " Acca."
-    },
-    {
-      id: 12,
-      name: " Fahima Mahjabin",
-      url: "https://i.ibb.co/ky5RV2S/esha.png",
-      date: "Yesterday",
-      message: "Mane?"
-    }
-  ];
+interface IProps {
+  SetTeamId: Dispatch<SetStateAction<number>>;
+}
+
+const Group: React.FC<IProps> = ({ SetTeamId }) => {
+  const { data } = useFetch<ITeam[]>(["getTeams", 99], GET_TEAMS, { limit: 20, offset: 0 });
+
+  console.log("data Team", data?.payload[0].POC_messages[0].text);
+
   const [isSearch, setIsSearch] = useState(true);
+
   return (
     <div>
       <div className="chat-header" onClick={() => setIsSearch(true)}>
@@ -129,8 +27,8 @@ const Group = () => {
       {/* Conversations  */}
       {isSearch && (
         <ul className=" mb-[-6] max-h-[430px] divide-y divide-gray-700 divide-inherit overflow-auto overflow-y-auto sm:max-h-[440px]">
-          {conversation.map(({ name, id, message, url, date }) => (
-            <div key={id} className=" flex cursor-pointer items-center justify-between  py-2 px-2 hover:bg-[#f0f2f5] md:mr-3">
+          {data?.payload?.map(({ name, id, created_at, POC_messages }) => (
+            <div key={id} onClick={() => SetTeamId(id)} className=" flex cursor-pointer items-center justify-between  py-2 px-2 hover:bg-[#f0f2f5] md:mr-3">
               <div key={id} className="flex items-center justify-between gap-x-3 ">
                 <img
                   src="https://png.pngtree.com/png-vector/20191009/ourmid/pngtree-group-icon-png-image_1796653.jpg"
@@ -139,11 +37,12 @@ const Group = () => {
                 />
                 <div className="con-list-content text-left">
                   <p className="  lett  text-lg font-semibold tracking-normal">{name}</p>
-                  <p className=" text-blue-500">{message}</p>
+                  <p className=" text-blue-500">{POC_messages[0]?.text}</p>
                 </div>
               </div>
               <div className="con-time text-gray-500">
-                <p>{date}</p>
+                {/* <p>{new Date(new Date("2023-03-24T05:08:55.82267+00:00").toDateString(created_at)}</p> */}
+                <p>{new Date(created_at).toDateString()}</p>
               </div>
             </div>
           ))}
