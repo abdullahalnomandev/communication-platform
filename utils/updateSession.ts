@@ -1,7 +1,7 @@
 import axios from "axios";
 import Jwt from "jsonwebtoken";
 import { Session } from "next-auth";
-import { getSession } from "next-auth/react";
+import { getSession, signIn } from "next-auth/react";
 
 interface CustomSession extends Session {
   accountId: string;
@@ -30,12 +30,20 @@ export const updateSession = async (accountId: string) => {
   const encoded = await axios.post("http://localhost:3000/api/jwt_update", updatedSession);
   console.log("ENCODE", encoded.data.token);
 
-  if (session) {
-    // Update the user session data
-    (session as CustomSession).token = encoded.data.token;
-    (session as CustomSession).accountId = accountId;
-    await getSession({ update: true } as any);
-  }
+  const res = await signIn("credentials", {
+    email: "esha@gmail.ckom",
+    password: "555555",
+    redirect: false
+  });
+
+  console.log("res", res);
+
+  // if (session) {
+  //   // Update the user session data
+  //   (session as CustomSession).token = encoded.data.token;
+  //   (session as CustomSession).accountId = accountId;
+  //   await getSession({ update: true } as any);
+  // }
   // await getSession().then((session) => {
   //   // session.user.email = "hello";
   //   console.log("then", session);

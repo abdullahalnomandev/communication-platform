@@ -21,6 +21,7 @@ export const authOptions = {
       clientSecret: process.env.GOOGLE_CLIENT_SECRET as string
     })
   ],
+
   session: {
     strategy: "jwt"
   } as any,
@@ -57,6 +58,8 @@ export const authOptions = {
       };
     },
     async session({ session, token, user }: any) {
+      console.log(session, token, user);
+
       const encodedToken = Jwt.sign(token, process.env.JWT_SECRET as string, {
         algorithm: "HS256"
       });
