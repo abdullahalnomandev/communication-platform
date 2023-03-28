@@ -10,7 +10,7 @@ const Inbox = () => {
       {/* <h1>Chats</h1> */}
 
       <div className="grid grid-cols-12">
-        <div className="col-span-12 sm:col-span-3">
+        <div className="col-span-12 sm:col-span-3 ">
           <Group SetTeamId={setTeamId} />
         </div>
         <div className="col-span-12 h-28 sm:col-span-9 ">

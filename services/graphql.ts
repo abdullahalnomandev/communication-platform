@@ -23,8 +23,6 @@ export const getGraphQLClient = async () => {
 
   const accessToken = (session as CustomSession)?.token;
 
-  console.log("CORE", accessToken);
-
   let headers = {};
 
   if (accessToken) {

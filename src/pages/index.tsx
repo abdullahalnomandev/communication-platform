@@ -4,6 +4,8 @@ import Home from "../components/Home";
 import UserEntryPage from "../components/Home/UserEntryPage";
 const HomePage = () => {
   const { data: session } = useSession();
+
+  const handleUpdate = async () => {};
   return (
     <>
       <Head>

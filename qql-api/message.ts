@@ -23,3 +23,16 @@ export const GET_MESSAGE = gql`
     }
   }
 `;
+
+export const CREATE_MESSAGE = gql`
+  mutation CRATE_MESSAGE($team_id: bigint!, $text: String = "") {
+    insert_POC_message(objects: { team_id: $team_id, text: $text }) {
+      returning {
+        id
+        text
+        team_id
+        sender_id
+      }
+    }
+  }
+`;

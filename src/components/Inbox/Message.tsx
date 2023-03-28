@@ -1,8 +1,11 @@
 import { useSession } from "next-auth/react";
+import { useState } from "react";
 import { BsFillArrowRightCircleFill } from "react-icons/bs";
+import { useMutation, useQueryClient } from "react-query";
 import useFetch from "../../../hooks/useFatch";
-import { GET_MESSAGE } from "../../../qql-api/message";
+import { CREATE_MESSAGE, GET_MESSAGE } from "../../../qql-api/message";
 import { GET_TEAM_ONE } from "../../../qql-api/team";
+import { getGraphQLClient } from "../../../services/graphql";
 import { IMessage, ITeam } from "../../../tyeps";
 
 interface IProps {
@@ -10,49 +13,34 @@ interface IProps {
 }
 
 const Message: React.FC<IProps> = ({ teamId }) => {
-  const message = [
-    { id: 1, message: "Hi", status: true },
-    { id: 2, message: "Kmon achos?", status: false },
-    { id: 3, message: "Alhamdullah Valo", status: true },
-    { id: 4, message: "Toy", status: false },
-    {
-      id: 5,
-      message: "Ami asole ata babinay je toi ata korte parbi jodi babtam tor kace r jibone o astam na.",
-      status: true,
-    },
-    { id: 1, message: "Hi", status: true },
-    { id: 2, message: "Kmon achos?", status: false },
-    { id: 3, message: "Alhamdullah Valo", status: true },
-    { id: 4, message: "Toy", status: false },
-    {
-      id: 5,
-      message: "Ami asole ata babinay je toi ata korte parbi jodi babtam tor kace r jibone o astam na.",
-      status: true,
-    },
-    { id: 1, message: "Hi", status: true },
-    { id: 2, message: "Kmon achos?", status: false },
-    { id: 3, message: "Alhamdullah Valo", status: true },
-    { id: 4, message: "Toy", status: false },
-    {
-      id: 5,
-      message: "Ami asole ata babinay je toi ata korte parbi jodi babtam tor kace r jibone o astam na.",
-      status: true,
-    },
-    { id: 1, message: "Hi", status: true },
-    { id: 2, message: "Kmon achos?", status: false },
-    { id: 3, message: "Alhamdullah Valo", status: true },
-    { id: 4, message: "Toy", status: false },
-    {
-      id: 5,
-      message: "Ami asole ata babinay je toi ata korte parbi jodi babtam tor kace r jibone o astam na.",
-      status: true,
-    },
-  ];
-  console.log("conversatinId", teamId);
+  const queryClient = useQueryClient();
+
+  const [message, setMessage] = useState<string>("");
+
+  console.log("message", message);
 
   const { data } = useFetch<IMessage[]>(["getMessage", teamId], GET_MESSAGE, { team_id: teamId, limit: 1000, offset: 0 });
   const { data: teamDetails } = useFetch<ITeam[]>(["getTeam", teamId], GET_TEAM_ONE, { team_id: teamId });
   const { data: session }: any = useSession();
+
+  const insertData = async (variable: {}) => {
+    const data = await (await getGraphQLClient()).request(CREATE_MESSAGE, variable);
+    return data;
+  };
+
+  const { error, isError, isSuccess, mutate } = useMutation(insertData);
+
+  const createUser = () => {
+    mutate(
+      { team_id: teamId, text: message },
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries(["getMessage", teamId]);
+          setMessage("");
+        }
+      }
+    );
+  };
 
   console.log("SESSON", session?.userId);
   const sender = Number(session?.userId);
@@ -61,7 +49,7 @@ const Message: React.FC<IProps> = ({ teamId }) => {
   const teamName = teamDetails ? teamDetails?.payload[0]?.name : "Loading....";
 
   return (
-    <div className=" ">
+    <div className=" border-l">
       <div className="nav-message-header bg-[#white] py-3 shadow-md mb-4">
         <div className="nav-profile">
           <div className=" flex cursor-pointer items-center justify-between  py-1 px-2 hover:bg-[#f0f2f5] md:mr-3">
@@ -76,7 +64,7 @@ const Message: React.FC<IProps> = ({ teamId }) => {
         </div>
       </div>
       <div className="message-content ">
-        <div className="content relative h-[700px] md:h-[700px]  overflow-auto">
+        <div className="content relative h-[700px] md:h-[400px]  overflow-auto">
           {data?.payload?.map(({ id, text, sender_id, POC_user }) => (
             <>
               {!(sender === sender_id) && (
@@ -94,8 +82,9 @@ const Message: React.FC<IProps> = ({ teamId }) => {
         <div className="send flex items-center justify-start ">
           <div className="icons mx-3 flex items-center justify-start gap-4 text-2xl font-bold"></div>
           <div className=" mt-2 flex  w-full mr-2   items-center justify-between rounded-full border border-gray-500 pr-2 ">
-            <input type="text" name="" id="" placeholder="Aa" className="w-full  py-2 mx-4 outline-none   " />
+            <input type="text" onBlur={(e) => setMessage(e.target.value)} name="" id="" placeholder="Aa" className="w-full  py-2 mx-4 outline-none   " />
             <BsFillArrowRightCircleFill
+              onClick={createUser}
               className=" cursor-pointer
              text-2xl font-light  text-blue-600"
             />

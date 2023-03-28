@@ -8,7 +8,6 @@ const NavBar = () => {
   const [color, setColor] = useState("yellow");
   const [isActive, setIsActive] = useState(1);
   const [session, setSession] = useState("" as any);
-
   const router = useRouter();
 
   const getAccessToken = async () => {
@@ -27,14 +26,10 @@ const NavBar = () => {
     getAccessToken();
   }, [router]);
 
-  const pushRoute = () => {
-    router.push("/inbox");
-  };
-
   const route = [
     { id: 1, path: "/", name: "HOME" },
     { id: 2, path: "/users", name: "USERS" },
-    { id: 3, path: "/inbox", name: "Inbox" },
+    { id: 3, path: "/inbox", name: "Inbox" }
   ];
 
   return (

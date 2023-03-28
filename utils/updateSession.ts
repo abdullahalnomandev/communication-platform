@@ -24,10 +24,11 @@ export const updateSession = async (accountId: string) => {
 
   const updatedSession: any = { ...decodedToken, accountId };
 
-  // const encodedToken = Jwt.sign(user, process.env.NEXT_PUBLIC_JWT_SECRET_TOKEN as any, {
+  // const encodedToken = Jwt.sign(updateSession, process.env.NEXT_PUBLIC_JWT_SECRET_TOKEN as any, {
   //   algorithm: "HS256"
   // });
-  const encoded = await axios.post("http://localhost:3000/api/hello", updatedSession);
+  const encoded = await axios.post("http://localhost:3000/api/jwt_update", updatedSession);
+  console.log("ENCODE", encoded.data.token);
 
   if (session) {
     // Update the user session data
@@ -35,5 +36,9 @@ export const updateSession = async (accountId: string) => {
     (session as CustomSession).accountId = accountId;
     await getSession({ update: true } as any);
   }
-  console.log(session);
+  // await getSession().then((session) => {
+  //   // session.user.email = "hello";
+  //   console.log("then", session);
+  // });
+  console.log(await getSession());
 };
