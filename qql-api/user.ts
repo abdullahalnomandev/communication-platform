@@ -44,3 +44,18 @@ export const FIND_USER_ONE = gql`
     }
   }
 `;
+
+export const GET_USER_BY_TEAM = gql`
+  query GET_USERS_BY_TEAM($team_id: bigint) {
+    payload: POC_users(where: { POC_messages: { team_id: { _eq: $team_id } } }) {
+      id
+      name
+      email
+      role
+      image_url
+      account_id
+      created_at
+      updated_at
+    }
+  }
+`;

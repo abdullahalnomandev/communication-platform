@@ -10,9 +10,6 @@ interface IProps {
 
 const Group: React.FC<IProps> = ({ SetTeamId }) => {
   const { data } = useFetch<ITeam[]>(["getTeams", 99], GET_TEAMS, { limit: 20, offset: 0 });
-
-  console.log("data Team", data?.payload[0].POC_messages[0].text);
-
   const [isSearch, setIsSearch] = useState(true);
 
   return (

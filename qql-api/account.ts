@@ -8,3 +8,16 @@ export const INSERT_ACCOUNT_ONE = gql`
     }
   }
 `;
+
+export const GET_TEAM_LIST = gql`
+  query GET_ALL_TEAM_BY_ACCOUNT {
+    payload: POC_team {
+      id
+      name
+      account_id
+      creator_id
+      created_at
+      updated_at
+    }
+  }
+`;

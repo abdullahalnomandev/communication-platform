@@ -29,8 +29,10 @@ const NavBar = () => {
   const route = [
     { id: 1, path: "/", name: "HOME" },
     { id: 2, path: "/users", name: "USERS" },
-    { id: 3, path: "/inbox", name: "Inbox" }
+    { id: 3, path: "/inbox", name: "Inbox" },
   ];
+
+  const routes = session ? route : route.slice(0, 1);
 
   return (
     <div className="nav mb-[0%]">
@@ -46,7 +48,7 @@ const NavBar = () => {
           </div> */}
           <div className="hidden w-full items-center justify-between md:order-1 md:flex md:w-auto" id="navbar-sticky">
             <ul className="mt-4 flex flex-col rounded-lg border  0 p-4  md:mt-0 md:flex-row md:space-x-8 md:border-0  md:text-sm md:font-medium transition ">
-              {route.map(({ id, name, path }) => (
+              {routes.map(({ id, name, path }) => (
                 <li key={id} onClick={() => setIsActive(id)} className={isActive === id ? " text-black font-bold hover" : "text-white"}>
                   <Link href={path}>{name}</Link>
                 </li>
