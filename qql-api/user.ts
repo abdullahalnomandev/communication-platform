@@ -44,3 +44,28 @@ export const FIND_USER_ONE = gql`
     }
   }
 `;
+
+export const GET_TEAM_MEMBERS = gql`
+  query MyQuery($team_id: bigint!) {
+    payload: POC_team_members(where: { team_id: { _eq: $team_id } }) {
+      id
+      team_id
+      user_id
+      updated_at
+      created_at
+      POC_user {
+        id
+        name
+        email
+        image_url
+        role
+        created_at
+        updated_at
+        account_id
+        POC_accounts {
+          id
+        }
+      }
+    }
+  }
+`;

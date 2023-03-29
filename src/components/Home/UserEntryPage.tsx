@@ -1,10 +1,18 @@
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { BsArrowRight } from "react-icons/bs";
+import useFetch from "../../../hooks/useFatch";
+import { GET_TEAM_LIST } from "../../../qql-api/account";
+import { ITeam } from "../../../tyeps";
 import AddAccountModal from "./AddAccountModal";
 const UserEntryPage = () => {
   const router = useRouter();
   const [showModal, setShowModal] = useState(false);
+
+  const { data } = useFetch<ITeam[]>(["getTeams", 99], GET_TEAM_LIST, {});
+
+  console.log("team", data);
+
   return (
     <div>
       <AddAccountModal showModal={showModal} setShowModal={setShowModal} />
@@ -16,18 +24,16 @@ const UserEntryPage = () => {
             Accounts for <span className="font-bold text-blue-500"> abdullahalnoman1512@gmail.com</span>
           </p>
           <div className="account divide-y divide-solid p-6">
-            <div className="flex justify-between items-center px-2 hover:bg-slate-300 transition py-4 cursor-pointer ">
-              <div className="flex justify-center items-center gap-4  ">
-                <h1>Clever people</h1>
-              </div>
-              <BsArrowRight className="text-2xl" />
-            </div>
-            <div className="flex justify-between items-center px-2 hover:bg-slate-300 transition py-4 cursor-pointer ">
-              <div className="flex justify-center items-center gap-4  ">
-                <h1>Genius Students</h1>
-              </div>
-              <BsArrowRight className="text-2xl" />
-            </div>
+            {data?.payload.map(({ name }) => (
+              <>
+                <div className="flex justify-between items-center px-2 hover:bg-slate-300 transition py-4 cursor-pointer ">
+                  <div className="flex justify-center items-center gap-4  ">
+                    <h1>{name}</h1>
+                  </div>
+                  <BsArrowRight className="text-2xl" />
+                </div>
+              </>
+            ))}
           </div>
         </div>
         <div className="new-account flex justify-center items-center gap-11 rounded-md border-4 w-3/5 mt-12 m-auto ">
