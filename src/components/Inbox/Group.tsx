@@ -34,7 +34,7 @@ const Group: React.FC<IProps> = ({ SetTeamId }) => {
                 />
                 <div className="con-list-content text-left">
                   <p className="  lett  text-lg font-semibold tracking-normal">{name}</p>
-                  <p className=" text-blue-500">{POC_messages[0]?.text}</p>
+                  <p className=" text-blue-500">{POC_messages[0]["text"]}</p>
                 </div>
               </div>
               <div className="con-time text-gray-500">
