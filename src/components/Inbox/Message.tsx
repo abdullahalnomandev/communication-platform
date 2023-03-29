@@ -87,7 +87,7 @@ const Message: React.FC<IProps> = ({ teamId }) => {
             </div>
             <div className="pr-8">
               <button className=" text-blue-500 underline cursor-pointer" onClick={handleShowModal}>
-                Team members (05)
+                Team members
               </button>
             </div>
           </div>
