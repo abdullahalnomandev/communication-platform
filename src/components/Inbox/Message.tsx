@@ -19,7 +19,6 @@ const Message: React.FC<IProps> = ({ teamId }) => {
 
   const [message, setMessage] = useState<string>("");
   const [showModal, setShowModal] = useState<boolean>(false);
-  const [changeModalId] = useState(333);
 
   console.log("message", message);
 
@@ -73,7 +72,7 @@ const Message: React.FC<IProps> = ({ teamId }) => {
         </div>
       </div>
       <div style={{ display: teamId == 0 ? "none" : "block" }} className=" border-l">
-        <GroupMembers showModal={showModal} setShowModal={setShowModal} changeModalId={changeModalId} teamName={teamName} />
+        <GroupMembers showModal={showModal} setShowModal={setShowModal} teamId={teamId} teamName={teamName} />
 
         <div className="nav-message-header bg-[#white] py-3 shadow-md mb-4">
           <div className="nav-profile flex  justify-between gap-1 items-center">

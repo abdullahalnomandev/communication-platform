@@ -34,3 +34,12 @@ export interface ITeam {
   updated_at: string;
   POC_messages: IMessage[];
 }
+
+export interface ITeamMembers {
+  id: number;
+  team_id: number;
+  user_id: number;
+  updated_at: string;
+  created_at: string;
+  POC_user: IUser;
+}

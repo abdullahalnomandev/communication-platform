@@ -4,18 +4,18 @@ import { useForm } from "react-hook-form";
 import { useMutation, useQueryClient } from "react-query";
 import useFetch from "../../../hooks/useFatch";
 import { INSERT_ACCOUNT_ONE } from "../../../qql-api/account";
-import { GET_USER_BY_TEAM } from "../../../qql-api/user";
+import { GET_TEAM_MEMBERS } from "../../../qql-api/user";
 import { getGraphQLClient } from "../../../services/graphql";
-import { IAccount, IUser } from "../../../tyeps";
+import { IAccount, ITeamMembers } from "../../../tyeps";
 
 interface IProps {
   showModal: Boolean;
   setShowModal: Dispatch<SetStateAction<boolean>>;
-  changeModalId: number;
+  teamId: number;
   teamName: string;
 }
 
-const GroupMembers: React.FC<IProps> = ({ showModal, setShowModal, changeModalId, teamName }) => {
+const GroupMembers: React.FC<IProps> = ({ showModal, setShowModal, teamId, teamName }) => {
   const queryClient = useQueryClient();
   const router = useRouter();
 
@@ -37,9 +37,9 @@ const GroupMembers: React.FC<IProps> = ({ showModal, setShowModal, changeModalId
     });
   };
 
-  const { data } = useFetch<IUser[]>(["geTemMembers", changeModalId], GET_USER_BY_TEAM, { team_id: 8 });
+  const { data } = useFetch<ITeamMembers[]>(["geTemMembers", teamId], GET_TEAM_MEMBERS, { team_id: teamId });
 
-  console.log("SHOW DATA MODAL", data);
+  console.log("SHOW TEAM DATA MODAL", data);
 
   return (
     <>
@@ -81,7 +81,7 @@ const GroupMembers: React.FC<IProps> = ({ showModal, setShowModal, changeModalId
                           </tr>
                         </thead>
                         <tbody>
-                          {data?.payload.map(({ id, name, email, role, image_url }, index) => (
+                          {data?.payload.map(({ id, POC_user: { name, email, role, image_url } }, index) => (
                             <tr key={index + 1} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                               <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                 <div className="flex items-center  gap-2">
