@@ -18,12 +18,13 @@ export const authOptions = {
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID as string,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
-    }),
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string
+    })
   ],
+  secret: process.env.NEXTAUTH_SECRET as string,
 
   session: {
-    strategy: "jwt",
+    strategy: "jwt"
   } as any,
 
   callbacks: {
@@ -53,28 +54,27 @@ export const authOptions = {
           "x-hasura-Default-Role": role,
           "x-hasura-User-Role": role,
           "x-hasura-user-Id": String(id),
-          "X-Hasura-Account-Id": "1",
-        },
+          "X-Hasura-Account-Id": "1"
+        }
       };
     },
     async session({ session, token, user }: any) {
       const encodedToken = Jwt.sign(token, process.env.JWT_SECRET as string, {
-        algorithm: "HS256",
+        algorithm: "HS256"
       });
+      // console.log(session);
 
       session.token = encodedToken;
       session.userId = String(token.userId);
       session.userRole = token.role;
       session.accountId = token.accountId;
       return Promise.resolve(session);
-    },
+    }
   },
   pages: {
-    signIn: "/auth/signin",
+    signIn: "/",
     signOut: "/auth/signout",
-    error: "/error", // Error code passed in query string as ?error=
-    verifyRequest: "/auth/verify-request", // (used for check email message)
-    newUser: "/auth/new-user", // New users will be directed here on first sign in (leave the property out if not of interest)
-  },
+    error: "/error"
+  }
 };
 export default NextAuth(authOptions);
