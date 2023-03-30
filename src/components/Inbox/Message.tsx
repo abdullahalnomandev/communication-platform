@@ -40,7 +40,7 @@ const Message: React.FC<IProps> = ({ teamId }) => {
         onSuccess: () => {
           queryClient.invalidateQueries(["getMessage", teamId]);
           setMessage("");
-        }
+        },
       }
     );
   };
@@ -93,7 +93,7 @@ const Message: React.FC<IProps> = ({ teamId }) => {
           </div>
         </div>
         <div className="message-content ">
-          <div className="content relative h-[700px] md:h-[390px]  overflow-auto">
+          <div className="content relative h-[700px] md:h-[650px]  overflow-auto">
             {data?.payload?.map(({ id, text, sender_id, POC_user }) => (
               <>
                 {!(sender === sender_id) && (

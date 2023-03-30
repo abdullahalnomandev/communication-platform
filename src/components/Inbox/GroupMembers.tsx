@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { useMutation, useQueryClient } from "react-query";
 import useFetch from "../../../hooks/useFatch";
 import { INSERT_ACCOUNT_ONE } from "../../../qql-api/account";
-import { GET_TEAM_MEMBERS } from "../../../qql-api/user";
+import { DELETE_TEAM_MEMBER, GET_TEAM_MEMBERS } from "../../../qql-api/user";
 import { getGraphQLClient } from "../../../services/graphql";
 import { IAccount, ITeamMembers } from "../../../tyeps";
 
@@ -13,6 +13,11 @@ interface IProps {
   setShowModal: Dispatch<SetStateAction<boolean>>;
   teamId: number;
   teamName: string;
+}
+
+interface ITeam {
+  team_id: number;
+  user_id: number;
 }
 
 const GroupMembers: React.FC<IProps> = ({ showModal, setShowModal, teamId, teamName }) => {
@@ -27,15 +32,23 @@ const GroupMembers: React.FC<IProps> = ({ showModal, setShowModal, teamId, teamN
 
   const { error, isError, isSuccess, mutate } = useMutation(insertData);
 
-  const createUser = (account: IAccount) => {
-    mutate(account, {
+  const deleteTeamMember = useMutation(
+    async (team: ITeam) => {
+      console.log("TEAM", team);
+
+      const data = await (await getGraphQLClient()).request(DELETE_TEAM_MEMBER, { team_id: team.team_id, user_id: team.user_id });
+      return data;
+    },
+    {
       onSuccess: () => {
-        queryClient.invalidateQueries(["getHotelData", 17]);
-        setShowModal(false);
-        router.push("/inbox");
+        queryClient.invalidateQueries(["geTemMembers", teamId]);
       },
-    });
-  };
+    }
+  );
+
+  // const deleteTeamMemberOne = (user_id: number, team_id: number) => {
+  //   console.log(user_id, team_id);
+  // };
 
   const { data } = useFetch<ITeamMembers[]>(["geTemMembers", teamId], GET_TEAM_MEMBERS, { team_id: teamId });
 
@@ -48,7 +61,7 @@ const GroupMembers: React.FC<IProps> = ({ showModal, setShowModal, teamId, teamN
           <div className=" justify-center md:mt-40   flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none ">
             <div className="relative w-auto my-6 mx-auto max-w-3xl ">
               {/*content*/}
-              <div className="border-0 rounded-lg shadow-lg relative flex flex-col bg-white outline-none focus:outline-none md:w-[800px] sm:w-[500px] w-[350px]">
+              <div className="border-0 rounded-lg shadow-lg relative flex flex-col bg-white outline-none focus:outline-none md:w-[600px] sm:w-[500px] w-[350px]">
                 {/*header*/}
                 <div className="flex items-start justify-between p-5 border-b border-solid border-slate-200 rounded-t">
                   <h1>{teamName}</h1>
@@ -69,9 +82,7 @@ const GroupMembers: React.FC<IProps> = ({ showModal, setShowModal, teamId, teamN
                             <th scope="col" className="px-6 py-3">
                               User Name
                             </th>
-                            <th scope="col" className="px-6 py-3">
-                              <div className="flex items-center">E-mail</div>
-                            </th>
+
                             <th scope="col" className="px-6 py-3">
                               <div className="flex items-center">Role</div>
                             </th>
@@ -81,7 +92,7 @@ const GroupMembers: React.FC<IProps> = ({ showModal, setShowModal, teamId, teamN
                           </tr>
                         </thead>
                         <tbody>
-                          {data?.payload.map(({ id, POC_user: { name, email, role, image_url } }, index) => (
+                          {data?.payload.map(({ user_id, team_id, id, POC_user: { name, email, role, image_url } }, index) => (
                             <tr key={index + 1} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                               <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                 <div className="flex items-center  gap-2">
@@ -93,11 +104,23 @@ const GroupMembers: React.FC<IProps> = ({ showModal, setShowModal, teamId, teamN
                                   <p>{name}</p>
                                 </div>
                               </th>
-                              <td className="px-6 py-4">{email}</td>
-                              <td className="px-6 py-4">{role}</td>
+                              <td className="px-6 py-4" style={{ color: role === "administrator" ? "green" : "black" }}>
+                                {role}
+                              </td>
                               <td className="px-6 py-4 text-left">
                                 <div className=" gap-2  ">
-                                  <button className="bg-red-500 text-white px-4 py-1 rounded-sm hover:bg-red-600 ">Remove</button>
+                                  <button
+                                    className="bg-red-500 text-white px-4 py-1 rounded-sm hover:bg-red-600 "
+                                    onClick={() => {
+                                      const data = {
+                                        team_id,
+                                        user_id,
+                                      };
+                                      deleteTeamMember.mutate(data);
+                                    }}
+                                  >
+                                    Remove
+                                  </button>
                                 </div>
                               </td>
                             </tr>

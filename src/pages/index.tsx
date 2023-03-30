@@ -1,11 +1,17 @@
 import { useSession } from "next-auth/react";
 import Head from "next/head";
+import { useRouter } from "next/router";
 import Home from "../components/Home";
-import UserEntryPage from "../components/Home/UserEntryPage";
 const HomePage = () => {
   const { data: session } = useSession();
+  console.log("sss", session);
 
-  const handleUpdate = async () => {};
+  const router = useRouter();
+
+  if (session) {
+    session && router.push("/inbox");
+  }
+
   return (
     <>
       <Head>
@@ -14,7 +20,10 @@ const HomePage = () => {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main>{session ? <UserEntryPage /> : <Home />}</main>
+      <main>
+        {/* {session ? <UserEntryPage /> : <Home />}  */}
+        <Home />
+      </main>
     </>
   );
 };

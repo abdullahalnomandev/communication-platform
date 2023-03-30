@@ -18,13 +18,13 @@ export const authOptions = {
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID as string,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string
-    })
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+    }),
   ],
   secret: process.env.NEXTAUTH_SECRET as string,
 
   session: {
-    strategy: "jwt"
+    strategy: "jwt",
   } as any,
 
   callbacks: {
@@ -44,7 +44,7 @@ export const authOptions = {
 
       const ifUserSignedIn = user ? true : false;
       if (ifUserSignedIn) {
-        (token.userId = id), (token.role = role), (token.accountId = "5");
+        (token.userId = id), (token.role = role), (token.accountId = "1");
       }
 
       return {
@@ -54,13 +54,13 @@ export const authOptions = {
           "x-hasura-Default-Role": role,
           "x-hasura-User-Role": role,
           "x-hasura-user-Id": String(id),
-          "X-Hasura-Account-Id": "1"
-        }
+          "X-Hasura-Account-Id": "1",
+        },
       };
     },
     async session({ session, token, user }: any) {
       const encodedToken = Jwt.sign(token, process.env.JWT_SECRET as string, {
-        algorithm: "HS256"
+        algorithm: "HS256",
       });
       // console.log(session);
 
@@ -69,12 +69,12 @@ export const authOptions = {
       session.userRole = token.role;
       session.accountId = token.accountId;
       return Promise.resolve(session);
-    }
+    },
   },
   pages: {
     signIn: "/",
     signOut: "/auth/signout",
-    error: "/error"
-  }
+    error: "/error",
+  },
 };
 export default NextAuth(authOptions);

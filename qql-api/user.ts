@@ -46,7 +46,7 @@ export const FIND_USER_ONE = gql`
 `;
 
 export const GET_TEAM_MEMBERS = gql`
-  query MyQuery($team_id: bigint!) {
+  query GET_ALL_TEAM_MEMBERS($team_id: bigint!) {
     payload: POC_team_members(where: { team_id: { _eq: $team_id } }) {
       id
       team_id
@@ -65,6 +65,16 @@ export const GET_TEAM_MEMBERS = gql`
         POC_accounts {
           id
         }
+      }
+    }
+  }
+`;
+
+export const DELETE_TEAM_MEMBER = gql`
+  mutation DELETE_TEAM_MEMBERS($team_id: bigint!, $user_id: bigint!) {
+    payload: delete_POC_team_members(where: { _and: { team_id: { _eq: $team_id }, user_id: { _eq: $user_id } } }) {
+      returning {
+        id
       }
     }
   }

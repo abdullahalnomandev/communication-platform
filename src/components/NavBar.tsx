@@ -33,6 +33,7 @@ const NavBar = () => {
   ];
 
   const routes = session ? route : route.slice(0, 1);
+  console.log("SESSION", session);
 
   return (
     <div className="nav mb-[0%]">
@@ -48,19 +49,17 @@ const NavBar = () => {
           </div> */}
           <div className="hidden w-full items-center justify-between md:order-1 md:flex md:w-auto" id="navbar-sticky">
             <ul className="mt-4 flex flex-col rounded-lg border  0 p-4  md:mt-0 md:flex-row md:space-x-8 md:border-0  md:text-sm md:font-medium transition ">
+              {session && (
+                <div className=" ml-4 flex  w-11  -mt-2 cursor-pointer items-center justify-center rounded-full bg-gray-400 text-center md:order-2">
+                  <img src={session?.user?.image} alt="" className="w-22 h-22 rounded-full " />
+                </div>
+              )}
               {routes.map(({ id, name, path }) => (
                 <li key={id} onClick={() => setIsActive(id)} className={isActive === id ? " text-black font-bold hover" : "text-white"}>
                   <Link href={path}>{name}</Link>
                 </li>
               ))}
-              {/* {session && (
-                <div
-                  onClick={pushRoute}
-                  className=" mb-8 flex h-11 w-11 cursor-pointer items-center justify-center rounded-full bg-gray-400 text-center md:order-2"
-                >
-                  <BiMessageRoundedDots className=" text-3xl text-white " />
-                </div>
-              )} */}
+
               <li className="-mt-3">
                 {session ? (
                   <button
