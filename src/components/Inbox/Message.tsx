@@ -1,6 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import { useSession } from "next-auth/react";
 import { useState } from "react";
+import { AiOutlineUserAdd } from "react-icons/ai";
 import { BsFillArrowRightCircleFill } from "react-icons/bs";
 import { useMutation, useQueryClient } from "react-query";
 import useFetch from "../../../hooks/useFatch";
@@ -19,6 +20,7 @@ const Message: React.FC<IProps> = ({ teamId }) => {
 
   const [message, setMessage] = useState<string>("");
   const [showModal, setShowModal] = useState<boolean>(false);
+  const [memberCount, setMemberCount] = useState(0);
 
   console.log("message", message);
 
@@ -40,7 +42,7 @@ const Message: React.FC<IProps> = ({ teamId }) => {
         onSuccess: () => {
           queryClient.invalidateQueries(["getMessage", teamId]);
           setMessage("");
-        },
+        }
       }
     );
   };
@@ -72,11 +74,11 @@ const Message: React.FC<IProps> = ({ teamId }) => {
         </div>
       </div>
       <div style={{ display: teamId == 0 ? "none" : "block" }} className=" border-l">
-        <GroupMembers showModal={showModal} setShowModal={setShowModal} teamId={teamId} teamName={teamName} />
+        <GroupMembers showModal={showModal} setMemberCount={setMemberCount} setShowModal={setShowModal} teamId={teamId} teamName={teamName} />
 
         <div className="nav-message-header bg-[#white] py-3 shadow-md mb-4">
           <div className="nav-profile flex  justify-between gap-1 items-center">
-            <div className=" flex cursor-pointer items-center justify-between  py-1 px-4 hover:bg-[#f0f2f5] md:mr-3">
+            <div className=" flex cursor-pointer items-center justify-between  py-1 px-4  md:mr-3">
               <div className="flex items-center justify-between gap-x-3 ">
                 {/* <img src="https://i.ibb.co/jLk5rtx/jpg.jpg" alt="" className="h-12 w-12 rounded-full" /> */}
                 <div className="con-list-content text-left">
@@ -85,9 +87,13 @@ const Message: React.FC<IProps> = ({ teamId }) => {
                 </div>
               </div>
             </div>
-            <div className="pr-8">
-              <button className=" text-blue-500 underline cursor-pointer" onClick={handleShowModal}>
-                Team members
+            <div className="flex items-center">
+              <AiOutlineUserAdd className="text-blue-500" />
+              <button className=" text-blue-500  cursor-pointer ">Add Members</button>{" "}
+            </div>
+            <div className="pr-8 flex justify-center items-center">
+              <button className=" text-blue-500  cursor-pointer text-lg" onClick={handleShowModal}>
+                Team members ({memberCount || "..."})
               </button>
             </div>
           </div>

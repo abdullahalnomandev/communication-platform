@@ -6,7 +6,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
 const NavBar = () => {
-  const [color, setColor] = useState("yellow");
+  const [color, setColor] = useState("#60a5fa");
   const [isActive, setIsActive] = useState(1);
   const [session, setSession] = useState("" as any);
   const router = useRouter();
@@ -17,13 +17,6 @@ const NavBar = () => {
   };
 
   useEffect(() => {
-    if (router.pathname === "/users") {
-      setColor("#60a5fa");
-    } else if (router.pathname === "/") {
-      setColor("#60a5fa");
-    } else if (router.pathname === "/inbox") {
-      setColor("#60a5fa");
-    }
     getAccessToken();
   }, [router]);
 
@@ -50,7 +43,10 @@ const NavBar = () => {
           <div className="hidden w-full items-center justify-between md:order-1 md:flex md:w-auto" id="navbar-sticky">
             <ul className="mt-4 flex flex-col rounded-lg border  0 p-4  md:mt-0 md:flex-row md:space-x-8 md:border-0  md:text-sm md:font-medium transition ">
               {session && (
-                <div className=" ml-4 flex  w-11  -mt-2 cursor-pointer items-center justify-center rounded-full bg-gray-400 text-center md:order-2">
+                <div
+                  onClick={() => router.push("/users/profile")}
+                  className=" ml-4 flex  w-11  -mt-2 cursor-pointer items-center justify-center rounded-full bg-gray-400 text-center md:order-2"
+                >
                   <img src={session?.user?.image} alt={session.user.name.split("")[0]} className="w-22 h-22 rounded-full " />
                 </div>
               )}

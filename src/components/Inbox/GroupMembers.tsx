@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useMutation, useQueryClient } from "react-query";
 import useFetch from "../../../hooks/useFatch";
@@ -13,6 +13,7 @@ interface IProps {
   setShowModal: Dispatch<SetStateAction<boolean>>;
   teamId: number;
   teamName: string;
+  setMemberCount: Dispatch<SetStateAction<number>>;
 }
 
 interface ITeam {
@@ -20,7 +21,7 @@ interface ITeam {
   user_id: number;
 }
 
-const GroupMembers: React.FC<IProps> = ({ showModal, setShowModal, teamId, teamName }) => {
+const GroupMembers: React.FC<IProps> = ({ showModal, setShowModal, teamId, teamName, setMemberCount }) => {
   const queryClient = useQueryClient();
   const router = useRouter();
 
@@ -42,7 +43,7 @@ const GroupMembers: React.FC<IProps> = ({ showModal, setShowModal, teamId, teamN
     {
       onSuccess: () => {
         queryClient.invalidateQueries(["geTemMembers", teamId]);
-      },
+      }
     }
   );
 
@@ -53,6 +54,10 @@ const GroupMembers: React.FC<IProps> = ({ showModal, setShowModal, teamId, teamN
   const { data } = useFetch<ITeamMembers[]>(["geTemMembers", teamId], GET_TEAM_MEMBERS, { team_id: teamId });
 
   console.log("SHOW TEAM DATA MODAL", data);
+
+  useEffect(() => {
+    setMemberCount(data?.payload.length as number);
+  }, [data]);
 
   return (
     <>
@@ -114,7 +119,7 @@ const GroupMembers: React.FC<IProps> = ({ showModal, setShowModal, teamId, teamN
                                     onClick={() => {
                                       const data = {
                                         team_id,
-                                        user_id,
+                                        user_id
                                       };
                                       deleteTeamMember.mutate(data);
                                     }}

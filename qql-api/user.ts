@@ -79,3 +79,38 @@ export const DELETE_TEAM_MEMBER = gql`
     }
   }
 `;
+
+export const GET_USER_BY_ID = gql`
+  query GET_USER_BY_ID($user_id: bigint!) {
+    payload: POC_users_by_pk(id: $user_id) {
+      id
+      email
+      image_url
+      name
+      role
+      mobile
+    }
+  }
+`;
+
+export const UPDATE_USER_BY_ID = gql`
+  mutation UPDATE_USER_BY_ID($user_id: bigint!, $updated_value: POC_users_set_input = {}) {
+    payload: update_POC_users_by_pk(pk_columns: { id: $user_id }, _set: $updated_value) {
+      id
+      email
+    }
+  }
+`;
+
+export const CREATE_TEAM_MEMBER = gql`
+  mutation CREATE_TEAM_MEMBER($team_id: bigint!, $user_id: bigint!) {
+    payload: insert_POC_team_members_one(object: { team_id: $team_id, user_id: $user_id }) {
+      id
+      team_id
+    }
+  }
+`;
+// {
+//   "team_id": 6,
+//   "user_id": 54
+// }

@@ -1,141 +1,111 @@
 import { useSession } from "next-auth/react";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { useMutation, useQueryClient } from "react-query";
+import useFetch from "../../../hooks/useFatch";
+import { GET_USER_BY_ID, UPDATE_USER_BY_ID } from "../../../qql-api/user";
+import { getGraphQLClient } from "../../../services/graphql";
+import { IUser } from "../../../tyeps";
 
+interface IProfile {
+  name: String;
+  email: String;
+  mobile: any;
+}
+
+type Inputs = {
+  name: string;
+  email: string;
+  mobile: string;
+};
 function Profile() {
   const { data: session }: any = useSession();
+  const { data: userProfile }: any = useFetch<IUser[]>(["getUserData", session?.userId], GET_USER_BY_ID, { user_id: 54 });
+
+  console.log("userProfile", userProfile?.payload);
+  const queryClient = useQueryClient();
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors }
+  } = useForm<IUser>();
+
+  const updateUser = async (variable: {}) => {
+    const data = await (await getGraphQLClient()).request(UPDATE_USER_BY_ID, variable);
+    return data;
+  };
+
+  const { error, isError, isSuccess, mutate } = useMutation(updateUser);
+
+  const updateUserData = (user: Inputs) => {
+    mutate(
+      { user_id: userProfile?.payload?.id, updated_value: user },
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries(["getUserData", session?.userId]);
+          alert("User updated successfully..");
+        }
+      }
+    );
+  };
+
+  const onSubmit: SubmitHandler<Inputs> = (data) => {
+    updateUserData(data);
+  };
+
+  if (!userProfile?.payload?.id) {
+    return <img className=" w-62 m-auto" src="https://upload.wikimedia.org/wikipedia/commons/b/b1/Loading_icon.gif?20151024034921" alt="" />;
+  }
   return (
-    <div className={`grid gap-4 `}>
-      <section className="p-6 bg-gray-800 text-gray-50">
-        <p className="text-2xl">
-          Role: <span className="text-3xl text-green-500">Admin</span>{" "}
-        </p>
-        <form
-          className="container flex flex-col mx-auto space-y-12 ng-untouched ng-pristine ng-valid"
-          // onSubmit={formSubmitFunction}
-        >
-          <div className="grid grid-cols-6 gap-4 col-span-full lg:col-span-3">
-            <div className="col-span-full">
-              <div className="flex justify-center items-center flex-col gap-2">
-                {/* <Image
-                  src={session?.user?.image || "https://img.freepik.com/free-icon/user_318-159711.jpg"}
-                  alt="Picture of the author"
-                  width={120}
-                  height={120}
-                  quality={100}
-                /> */}
-                <img src={session?.user?.image || null} className="mr-3 h-32 rounded-full " alt="Flowbite Logo" />
-              </div>
-            </div>
-            <div className="col-span-full sm:col-span-3">
-              <label htmlFor="firstName" className="text-sm">
-                Name
-              </label>
+    <>
+      <div>
+        <div className="image-url w-40 m-auto mt-12 ">
+          <img
+            src={session?.user?.image || "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTG6a6KfKK66Jy1eCuDau7yp2rb5dIfGvl45g&usqp=CAU"}
+            alt="user image"
+            className=" w-32 h-32  rounded-full object-cover"
+          />
+        </div>
+        <div className="w-full max-w-2xl m-auto -mt-6">
+          <form onSubmit={handleSubmit(onSubmit)} className="bg-white  shadow-md rounded px-8 pt-6 pb-8 mb-4">
+            <div className="mb-4">
+              <label className="block text-gray-700 text-sm font-bold mb-2">Name</label>
               <input
-                id="firstName"
-                value={session?.user?.name}
-                name="firstName"
-                type="text"
-                placeholder="First name"
-                className="p-2 w-full rounded-md focus:ring focus:ring-opacity-75 focus:ring-violet-400 border-gray-700 text-gray-900 dark:text-white"
-                required
+                defaultValue={userProfile?.payload?.name}
+                {...register("name")}
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               />
             </div>
-            <div className="col-span-full sm:col-span-3">
-              <label htmlFor="lastName" className="text-sm">
-                Last name
-              </label>
+            <div className="mb-4">
+              <label className="block text-gray-700 text-sm font-bold mb-2">E-mail</label>
               <input
-                id="lastName"
-                name="lastName"
-                type="text"
-                placeholder="Last name"
-                className="p-2 w-full rounded-md focus:ring focus:ring-opacity-75 focus:ring-violet-400 border-gray-700 text-gray-900 dark:text-white"
-              />
-            </div>
-            <div className="col-span-full sm:col-span-3">
-              <label htmlFor="email" className="text-sm">
-                Email
-              </label>
-              <input
-                id="email"
-                name="email"
-                value={session?.user?.email}
-                type="email"
-                placeholder="Email"
-                className="p-2 w-full rounded-md focus:ring focus:ring-opacity-75 focus:ring-violet-400 border-gray-700 text-gray-900 dark:text-white"
+                defaultValue={userProfile?.payload?.email}
                 disabled
+                {...register("email")}
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               />
             </div>
-            <div className="col-span-full sm:col-span-3">
-              <label htmlFor="age" className="text-sm">
-                Age
-              </label>
+            <div className="mb-4">
+              <label className="block text-gray-700 text-sm font-bold mb-2">Mobile</label>
               <input
-                type="date"
-                name="age"
-                placeholder="age"
-                className="p-2 w-full rounded-md focus:ring focus:ring-opacity-75 focus:ring-violet-400 border-gray-700 text-gray-900 dark:text-white"
-                required
-              />
-            </div>
-            <div className="col-span-full">
-              <label htmlFor="address" className="text-sm">
-                Address
-              </label>
-              <input
-                id="address"
-                name="address"
-                type="text"
-                placeholder=""
-                className="p-2 w-full rounded-md focus:ring focus:ring-opacity-75 focus:ring-violet-400 border-gray-700 text-gray-900 dark:text-white"
-                required
-              />
-            </div>
-            <div className="col-span-full sm:col-span-2">
-              <label htmlFor="number" className="text-sm">
-                Number
-              </label>
-              <input
-                id="number"
-                name="number"
-                type="number"
-                placeholder="+8800---"
-                className="p-2 w-full rounded-md focus:ring focus:ring-opacity-75 focus:ring-violet-400 border-gray-700 text-gray-900 dark:text-white"
-                required
-              />
-            </div>
-            <div className="col-span-full sm:col-span-2">
-              <label htmlFor="state" className="text-sm">
-                Area / State
-              </label>
-              <input
-                id="state"
-                name="state"
-                type="text"
-                placeholder=""
-                className="p-2 w-full rounded-md focus:ring focus:ring-opacity-75 focus:ring-violet-400 border-gray-700 text-gray-900 dark:text-white"
-                required
+                defaultValue={userProfile?.payload?.mobile}
+                {...register("mobile")}
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               />
             </div>
 
-            <>
-              <div className="col-span-full sm:col-span-2">
-                <label htmlFor="license-number" className="text-sm">
-                  License Number
-                </label>
-                <input
-                  id="license-number"
-                  name="license-number"
-                  type="text"
-                  placeholder=""
-                  className="p-2 w-full rounded-md focus:ring focus:ring-opacity-75 focus:ring-violet-400 border-gray-700 text-gray-900 dark:text-white"
-                  required
-                />
-              </div>
-            </>
-          </div>
-        </form>
-      </section>
-    </div>
+            <div className="flex items-center justify-between">
+              <input
+                type="submit"
+                value="Update "
+                className=" cursor-pointer bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+              />
+            </div>
+          </form>
+          <p className="text-center text-gray-500 text-xs">&copy;2023 Acme Corp. All rights reserved.</p>
+        </div>
+      </div>
+    </>
   );
 }
 
