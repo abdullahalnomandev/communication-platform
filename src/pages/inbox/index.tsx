@@ -1,9 +1,17 @@
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/router";
 import { useState } from "react";
 import Group from "../../components/Inbox/Group";
 import Message from "../../components/Inbox/Message";
 
 const Inbox = () => {
   const [teamId, setTeamId] = useState<number>(0);
+  const { data: session } = useSession();
+
+  const router = useRouter();
+  if (!session) {
+    session && router.push("/");
+  }
 
   return (
     <div>

@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import { getSession, signIn, signOut } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
@@ -29,11 +30,10 @@ const NavBar = () => {
   const route = [
     { id: 1, path: "/", name: "HOME" },
     { id: 2, path: "/users", name: "USERS" },
-    { id: 3, path: "/inbox", name: "Inbox" },
+    { id: 3, path: "/inbox", name: "Inbox" }
   ];
 
   const routes = session ? route : route.slice(0, 1);
-  console.log("SESSION", session);
 
   return (
     <div className="nav mb-[0%]">
@@ -51,7 +51,7 @@ const NavBar = () => {
             <ul className="mt-4 flex flex-col rounded-lg border  0 p-4  md:mt-0 md:flex-row md:space-x-8 md:border-0  md:text-sm md:font-medium transition ">
               {session && (
                 <div className=" ml-4 flex  w-11  -mt-2 cursor-pointer items-center justify-center rounded-full bg-gray-400 text-center md:order-2">
-                  <img src={session?.user?.image} alt="" className="w-22 h-22 rounded-full " />
+                  <img src={session?.user?.image} alt={session.user.name.split("")[0]} className="w-22 h-22 rounded-full " />
                 </div>
               )}
               {routes.map(({ id, name, path }) => (
