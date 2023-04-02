@@ -9,7 +9,8 @@ import { CREATE_MESSAGE, GET_MESSAGE } from "../../../qql-api/message";
 import { GET_TEAM_ONE } from "../../../qql-api/team";
 import { getGraphQLClient } from "../../../services/graphql";
 import { IMessage, ITeam } from "../../../tyeps";
-import GroupMembers from "./GroupMembers";
+import AddGroupMember from "./AddGroupMember";
+import GetAllGroupMembers from "./GetAllGroupMembers";
 
 interface IProps {
   teamId: number;
@@ -20,6 +21,7 @@ const Message: React.FC<IProps> = ({ teamId }) => {
 
   const [message, setMessage] = useState<string>("");
   const [showModal, setShowModal] = useState<boolean>(false);
+  const [addUserShowModal, setAddUserShowModal] = useState<boolean>(false);
   const [memberCount, setMemberCount] = useState(0);
 
   console.log("message", message);
@@ -74,7 +76,14 @@ const Message: React.FC<IProps> = ({ teamId }) => {
         </div>
       </div>
       <div style={{ display: teamId == 0 ? "none" : "block" }} className=" border-l">
-        <GroupMembers showModal={showModal} setMemberCount={setMemberCount} setShowModal={setShowModal} teamId={teamId} teamName={teamName} />
+        <GetAllGroupMembers showModal={showModal} setMemberCount={setMemberCount} setShowModal={setShowModal} teamId={teamId} teamName={teamName} />
+        <AddGroupMember
+          setAddUserShowModal={setAddUserShowModal}
+          setMemberCount={setMemberCount}
+          addUserShowModal={addUserShowModal}
+          teamId={teamId}
+          teamName={teamName}
+        />
 
         <div className="nav-message-header bg-[#white] py-3 shadow-md mb-4">
           <div className="nav-profile flex  justify-between gap-1 items-center">
@@ -87,7 +96,7 @@ const Message: React.FC<IProps> = ({ teamId }) => {
                 </div>
               </div>
             </div>
-            <div className="flex items-center">
+            <div className="flex items-center" onClick={() => setAddUserShowModal(true)}>
               <AiOutlineUserAdd className="text-blue-500" />
               <button className=" text-blue-500  cursor-pointer ">Add Members</button>{" "}
             </div>

@@ -101,16 +101,3 @@ export const UPDATE_USER_BY_ID = gql`
     }
   }
 `;
-
-export const CREATE_TEAM_MEMBER = gql`
-  mutation CREATE_TEAM_MEMBER($team_id: bigint!, $user_id: bigint!) {
-    payload: insert_POC_team_members_one(object: { team_id: $team_id, user_id: $user_id }) {
-      id
-      team_id
-    }
-  }
-`;
-// {
-//   "team_id": 6,
-//   "user_id": 54
-// }

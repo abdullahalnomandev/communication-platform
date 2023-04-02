@@ -65,6 +65,9 @@ function Profile() {
             alt="user image"
             className=" w-32 h-32  rounded-full object-cover"
           />
+          <p className="capitalize pt-3 ">
+            Role: <span className=" text-red-600 text-lg">{userProfile?.payload?.role}</span>{" "}
+          </p>
         </div>
         <div className="w-full max-w-2xl m-auto -mt-6">
           <form onSubmit={handleSubmit(onSubmit)} className="bg-white  shadow-md rounded px-8 pt-6 pb-8 mb-4">
