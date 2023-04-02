@@ -1,13 +1,13 @@
 import { useRouter } from "next/router";
 import { Dispatch, SetStateAction, useEffect } from "react";
 import { useForm } from "react-hook-form";
+import { ImCross } from "react-icons/im";
 import { useMutation, useQueryClient } from "react-query";
 import useFetch from "../../../hooks/useFatch";
 import { INSERT_ACCOUNT_ONE } from "../../../qql-api/account";
 import { DELETE_TEAM_MEMBER, GET_TEAM_MEMBERS } from "../../../qql-api/user";
 import { getGraphQLClient } from "../../../services/graphql";
 import { IAccount, ITeamMembers } from "../../../tyeps";
-
 interface IProps {
   showModal: Boolean;
   setShowModal: Dispatch<SetStateAction<boolean>>;
@@ -35,15 +35,13 @@ const GroupMembers: React.FC<IProps> = ({ showModal, setShowModal, teamId, teamN
 
   const deleteTeamMember = useMutation(
     async (team: ITeam) => {
-      console.log("TEAM", team);
-
       const data = await (await getGraphQLClient()).request(DELETE_TEAM_MEMBER, { team_id: team.team_id, user_id: team.user_id });
       return data;
     },
     {
       onSuccess: () => {
         queryClient.invalidateQueries(["geTemMembers", teamId]);
-      }
+      },
     }
   );
 
@@ -51,9 +49,7 @@ const GroupMembers: React.FC<IProps> = ({ showModal, setShowModal, teamId, teamN
   //   console.log(user_id, team_id);
   // };
 
-  const { data } = useFetch<ITeamMembers[]>(["geTemMembers", teamId], GET_TEAM_MEMBERS, { team_id: teamId });
-
-  console.log("SHOW TEAM DATA MODAL", data);
+  const { data } = useFetch<ITeamMembers[]>(["geTemMembers", teamId], GET_TEAM_MEMBERS, { team_id: teamId, search_item: "%%" });
 
   useEffect(() => {
     setMemberCount(data?.payload.length as number);
@@ -69,12 +65,12 @@ const GroupMembers: React.FC<IProps> = ({ showModal, setShowModal, teamId, teamN
               <div className="border-0 rounded-lg shadow-lg relative flex flex-col bg-white outline-none focus:outline-none md:w-[600px] sm:w-[500px] w-[350px]">
                 {/*header*/}
                 <div className="flex items-start justify-between p-5 border-b border-solid border-slate-200 rounded-t">
-                  <h1>{teamName}</h1>
+                  <h1 className="text-xl text-gray-500 font-mono">{teamName}</h1>
                   <button
                     className="p-1 mb-3 ml-auto border-0 bg-red-600 rounded-full h-8 w-8 text-center  justify-center items-center  float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
                     onClick={() => setShowModal(false)}
                   >
-                    <span className="bg-transparent text-red  h-6 w-6 text-2xl block outline-none focus:outline-none">X</span>
+                    <ImCross className="text-sm ml-1" />
                   </button>
                 </div>
                 {/*body*/}
@@ -119,7 +115,7 @@ const GroupMembers: React.FC<IProps> = ({ showModal, setShowModal, teamId, teamN
                                     onClick={() => {
                                       const data = {
                                         team_id,
-                                        user_id
+                                        user_id,
                                       };
                                       deleteTeamMember.mutate(data);
                                     }}

@@ -24,8 +24,6 @@ const Message: React.FC<IProps> = ({ teamId }) => {
   const [addUserShowModal, setAddUserShowModal] = useState<boolean>(false);
   const [memberCount, setMemberCount] = useState(0);
 
-  console.log("message", message);
-
   const { data } = useFetch<IMessage[]>(["getMessage", teamId], GET_MESSAGE, { team_id: teamId, limit: 1000, offset: 0 });
   const { data: teamDetails } = useFetch<ITeam[]>(["getTeam", teamId], GET_TEAM_ONE, { team_id: teamId });
   const { data: session }: any = useSession();
@@ -44,12 +42,11 @@ const Message: React.FC<IProps> = ({ teamId }) => {
         onSuccess: () => {
           queryClient.invalidateQueries(["getMessage", teamId]);
           setMessage("");
-        }
+        },
       }
     );
   };
 
-  console.log("SESSON", session?.userId);
   const sender = Number(session?.userId);
 
   // const teamDetail = team;
@@ -58,7 +55,6 @@ const Message: React.FC<IProps> = ({ teamId }) => {
   const handleShowModal = () => {
     setShowModal(true);
   };
-  console.log("teamName", teamName);
 
   return (
     <>

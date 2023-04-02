@@ -46,8 +46,13 @@ export const FIND_USER_ONE = gql`
 `;
 
 export const GET_TEAM_MEMBERS = gql`
-  query GET_ALL_TEAM_MEMBERS($team_id: bigint!) {
-    payload: POC_team_members(where: { team_id: { _eq: $team_id } }) {
+  query GET_ALL_TEAM_MEMBERS($team_id: bigint!, $search_item: String!) {
+    payload: POC_team_members(
+      where: {
+        team_id: { _eq: $team_id }
+        POC_user: { _or: [{ name: { _ilike: $search_item } }, { email: { _ilike: $search_item } }, { mobile: { _ilike: $search_item } }] }
+      }
+    ) {
       id
       team_id
       user_id
@@ -62,6 +67,7 @@ export const GET_TEAM_MEMBERS = gql`
         created_at
         updated_at
         account_id
+        mobile
         POC_accounts {
           id
         }
@@ -93,11 +99,28 @@ export const GET_USER_BY_ID = gql`
   }
 `;
 
-export const UPDATE_USER_BY_ID = gql`
-  mutation UPDATE_USER_BY_ID($user_id: bigint!, $updated_value: POC_users_set_input = {}) {
-    payload: update_POC_users_by_pk(pk_columns: { id: $user_id }, _set: $updated_value) {
+export const GET_ALL_TEAM_MEMBERS = gql`
+  query GET_ALL_TEAM_MEMBERS($search_item: String!) {
+    payload: POC_users(where: { _or: [{ name: { _ilike: $search_item } }, { email: { _ilike: $search_item } }, { mobile: { _ilike: $search_item } }] }) {
       id
+      updated_at
+      created_at
+      id
+      name
       email
+      image_url
+      role
+      created_at
+      updated_at
+      account_id
+      mobile
+      POC_accounts {
+        id
+      }
     }
   }
 `;
+
+// {
+//   "search_item": "%esha%"
+// }

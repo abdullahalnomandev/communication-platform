@@ -29,15 +29,19 @@ export const GET_TEAM_ONE = gql`
   }
 `;
 
-export const CREATE_TEAM_MEMBER = gql`
-  mutation CREATE_TEAM_MEMBER($team_id: bigint!, $user_id: bigint!) {
-    payload: insert_POC_team_members_one(object: { team_id: $team_id, user_id: $user_id }) {
-      id
-      team_id
+export const CREATE_TEAM_MEMBERS = gql`
+  mutation CREATE_TEAM_MEMBER($team_members: [POC_team_members_insert_input!]!) {
+    payload: insert_POC_team_members(objects: $team_members) {
+      returning {
+        id
+        team_id
+      }
     }
   }
 `;
 // {
-//   "team_id": 6,
-//   "user_id": 54
+//   "team_members": [
+//     { "team_id": 4, "user_id": 54 },
+//     { "team_id": 4, "user_id": 56 }
+//   ]
 // }
