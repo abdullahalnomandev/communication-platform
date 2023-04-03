@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { Dispatch, SetStateAction, useEffect } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { ImCross } from "react-icons/im";
 import { useMutation, useQueryClient } from "react-query";
@@ -22,6 +22,7 @@ interface ITeam {
 }
 
 const GroupMembers: React.FC<IProps> = ({ showModal, setShowModal, teamId, teamName, setMemberCount }) => {
+  const [isDelete, setIsDelete] = useState<boolean>(false);
   const queryClient = useQueryClient();
   const router = useRouter();
 
@@ -35,12 +36,14 @@ const GroupMembers: React.FC<IProps> = ({ showModal, setShowModal, teamId, teamN
 
   const deleteTeamMember = useMutation(
     async (team: ITeam) => {
+      setIsDelete(true);
       const data = await (await getGraphQLClient()).request(DELETE_TEAM_MEMBER, { team_id: team.team_id, user_id: team.user_id });
       return data;
     },
     {
       onSuccess: () => {
-        queryClient.invalidateQueries(["geTemMembers", teamId]);
+        queryClient.invalidateQueries(["geTemMembers"]);
+        setIsDelete(false);
       },
     }
   );
@@ -65,16 +68,16 @@ const GroupMembers: React.FC<IProps> = ({ showModal, setShowModal, teamId, teamN
               <div className="border-0 rounded-lg shadow-lg relative flex flex-col bg-white outline-none focus:outline-none md:w-[600px] sm:w-[500px] w-[350px]">
                 {/*header*/}
                 <div className="flex items-start justify-between p-5 border-b border-solid border-slate-200 rounded-t">
-                  <h1 className="text-xl text-gray-500 font-mono">{teamName}</h1>
-                  <button
-                    className="p-1 mb-3 ml-auto border-0 bg-red-600 rounded-full h-8 w-8 text-center  justify-center items-center  float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
-                    onClick={() => setShowModal(false)}
-                  >
+                  <h1 className="modal-header">{teamName}</h1>
+
+                  <button className="delete-modal" onClick={() => setShowModal(false)}>
                     <ImCross className="text-sm ml-1" />
                   </button>
                 </div>
                 {/*body*/}
                 <div className="relative p-6 flex-auto">
+                  {isDelete && <p className="text-red-400">Deleting....</p>}
+
                   <>
                     <div className="relative overflow-x-auto shadow-md sm:rounded-sm ">
                       <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
@@ -111,7 +114,8 @@ const GroupMembers: React.FC<IProps> = ({ showModal, setShowModal, teamId, teamN
                               <td className="px-6 py-4 text-left">
                                 <div className=" gap-2  ">
                                   <button
-                                    className="bg-red-500 text-white px-4 py-1 rounded-sm hover:bg-red-600 "
+                                    className={`bg-red-500 text-white px-4 py-1 rounded-sm hover:bg-red-600`}
+                                    disabled={isDelete}
                                     onClick={() => {
                                       const data = {
                                         team_id,

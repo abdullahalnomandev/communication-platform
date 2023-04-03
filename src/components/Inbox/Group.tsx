@@ -6,14 +6,15 @@ import { ITeam } from "../../../tyeps";
 
 interface IProps {
   SetTeamId: Dispatch<SetStateAction<number>>;
+  setShowTeamModal: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const Group: React.FC<IProps> = ({ SetTeamId }) => {
+const Group: React.FC<IProps> = ({ SetTeamId, setShowTeamModal }) => {
   const { data } = useFetch<ITeam[]>(["getTeams", 99], GET_TEAMS, { limit: 20, offset: 0 });
   const [isSearch, setIsSearch] = useState(true);
 
   return (
-    <div>
+    <div className="relative min-h-screen">
       <div className="chat-header" onClick={() => setIsSearch(true)}>
         <div className=" search mx-2 my-2 flex cursor-pointer items-center justify-start gap-2 rounded-full bg-slate-100 py-2 pl-3">
           <AiOutlineSearch />
@@ -34,7 +35,7 @@ const Group: React.FC<IProps> = ({ SetTeamId }) => {
                 />
                 <div className="con-list-content text-left">
                   <p className="  lett  text-lg font-semibold tracking-normal">{name}</p>
-                  <p className=" text-blue-500">{POC_messages[0]["text"]}</p>
+                  <p className=" text-blue-500">{POC_messages[0]?.["text"]}</p>
                 </div>
               </div>
               <div className="con-time text-gray-500">
@@ -45,6 +46,11 @@ const Group: React.FC<IProps> = ({ SetTeamId }) => {
           ))}
         </ul>
       )}
+      <div className="absolute bottom-0 right-0 mb-3 mr-1  max-w-full ">
+        <button className="text-white bg-blue-600 hover:bg-blue-800 transition  px-4 py-2 rounded-lg" onClick={() => setShowTeamModal(true)}>
+          +New Team
+        </button>
+      </div>
     </div>
   );
 };

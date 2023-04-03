@@ -58,7 +58,7 @@ const Message: React.FC<IProps> = ({ teamId }) => {
 
   return (
     <>
-      <div style={{ display: teamId == 0 ? "block" : "none" }} className=" border-l flex h-screen items-center justify-center">
+      <div style={{ display: teamId == 0 ? "block" : "none" }} className=" border-l flex h-screen  items-center justify-center">
         <div className="text-center md:pt-42 ">
           <img
             src="https://www.creativefabrica.com/wp-content/uploads/2019/04/Chat-icon-by-ahlangraphic-24-580x386.jpg"
@@ -71,7 +71,7 @@ const Message: React.FC<IProps> = ({ teamId }) => {
           </p>
         </div>
       </div>
-      <div style={{ display: teamId == 0 ? "none" : "block" }} className=" border-l">
+      <div style={{ display: teamId == 0 ? "none" : "block" }} className=" border-l min-h-screen relative">
         <GetAllGroupMembers showModal={showModal} setMemberCount={setMemberCount} setShowModal={setShowModal} teamId={teamId} teamName={teamName} />
         <AddGroupMember
           setAddUserShowModal={setAddUserShowModal}
@@ -104,7 +104,7 @@ const Message: React.FC<IProps> = ({ teamId }) => {
           </div>
         </div>
         <div className="message-content ">
-          <div className="content relative h-[700px] md:h-[650px]  overflow-auto">
+          <div className="content relative max-h-[700px] md:max-h-[750px]  overflow-auto">
             {data?.payload?.map(({ id, text, sender_id, POC_user }) => (
               <>
                 {!(sender === sender_id) && (
@@ -118,7 +118,7 @@ const Message: React.FC<IProps> = ({ teamId }) => {
             ))}
           </div>
         </div>
-        <div className="bottom-message  bottom-0  ">
+        <div className="bottom-message  bottom-0 absolute w-full mb-2 ">
           <div className="send flex items-center justify-start ">
             <div className="icons mx-3 flex items-center justify-start gap-4 text-2xl font-bold"></div>
             <div className=" mt-2 flex  w-full mr-2   items-center justify-between rounded-full border border-gray-500 pr-2 ">

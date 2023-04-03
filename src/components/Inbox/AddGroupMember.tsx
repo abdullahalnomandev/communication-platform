@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { ImCross } from "react-icons/im";
 import { useMutation, useQueryClient } from "react-query";
@@ -81,19 +81,23 @@ const AddGroupMember: React.FC<IProps> = ({ addUserShowModal, setAddUserShowModa
       { team_members: addTeamMembersData },
       {
         onSuccess: () => {
-          queryClient.invalidateQueries(["getAllUsers", teamId]);
+          queryClient.invalidateQueries(["getAllUsers"]);
           setAddUserShowModal(false);
           setAddTeamMembersData([]);
           setAddToCard([]);
           alert("User added successfully.");
           setPending(false);
-        }
+        },
       }
     );
   };
-  if (error) {
-    console.error(error);
-  }
+
+  useEffect(() => {
+    if (isError) {
+      alert("Something went wrong. Please try again. Error occured may be due to duplicate user ");
+      setPending(false);
+    }
+  }, [isError]);
 
   const { data: allUsers } = useFetch<IUser[]>(["getAllUsers", searchInputText], GET_APP_USERS, { search_item: `%${searchInputText}%` });
 
@@ -120,13 +124,14 @@ const AddGroupMember: React.FC<IProps> = ({ addUserShowModal, setAddUserShowModa
               <div className="border-0 rounded-lg shadow-lg relative flex flex-col bg-white outline-none focus:outline-none md:w-[600px] sm:w-[500px] w-[350px]">
                 {/*header*/}
                 <div className="flex items-start justify-between p-5 border-b border-solid border-slate-200 rounded-t">
-                  <h1 className="text-xl text-gray-500 font-mono">{teamName}</h1>
+                  <h1 className="modal-header">{teamName}</h1>
                   <button
-                    className="p-1 mb-3 ml-auto border-0 bg-red-600 rounded-full h-8 w-8 text-center  justify-center items-center  float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
+                    className=" delete-modal"
                     onClick={() => {
                       setAddUserShowModal(false);
                       setAddToCard([]);
                       setAddTeamMembersData([]);
+                      setPending(false);
                     }}
                   >
                     {/* <span className="bg-transparent text-red  h-6 w-6 text-2xl block outline-none focus:outline-none">X</span> */}
@@ -145,7 +150,7 @@ const AddGroupMember: React.FC<IProps> = ({ addUserShowModal, setAddUserShowModa
                   {addToCard.length !== 0 && pending === false && (
                     <button
                       onClick={addTeamMembers}
-                      className=" add-button- cursor-pointer mr-auto text-white bg-blue-500 px-5 py-2 rounded-full text-center w-1/3 
+                      className=" ml-[62%] mt-4 add-button- cursor-pointer mr-auto text-white bg-blue-500 px-5 py-2 rounded-full text-center w-1/3 
                     
                     "
                     >
@@ -154,7 +159,7 @@ const AddGroupMember: React.FC<IProps> = ({ addUserShowModal, setAddUserShowModa
                   )}
                   {pending && (
                     <button
-                      className=" add-button- cursor-pointer mr-auto text-white bg-blue-300 px-5 py-2 rounded-full text-center w-1/3 
+                      className="ml-[62%] mt-4  add-button- cursor-pointer mr-auto text-white bg-blue-300 px-5 py-2 rounded-full text-center w-1/3 
                     
                     "
                     >
@@ -225,7 +230,7 @@ const AddGroupMember: React.FC<IProps> = ({ addUserShowModal, setAddUserShowModa
                                   onClick={() => {
                                     const data = {
                                       name,
-                                      user_id: id
+                                      user_id: id,
                                     };
                                     handleAddToCard(data);
                                   }}

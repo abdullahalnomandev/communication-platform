@@ -117,6 +117,13 @@ export const GET_APP_USERS = gql`
   }
 `;
 
-// {
-//   "search_item": "%esha%"
-// }
+export const UPDATE_USER_BY_ID = gql`
+  mutation UPDATE_USER_BY_ID($user_id: bigint = "", $updated_value: POC_users_set_input = {}) {
+    payload: update_POC_users_by_pk(pk_columns: { id: $user_id }, _set: $updated_value) {
+      id
+      email
+      name
+      role
+    }
+  }
+`;

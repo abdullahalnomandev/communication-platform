@@ -39,9 +39,12 @@ export const CREATE_TEAM_MEMBERS = gql`
     }
   }
 `;
-// {
-//   "team_members": [
-//     { "team_id": 4, "user_id": 54 },
-//     { "team_id": 4, "user_id": 56 }
-//   ]
-// }
+
+export const CREATE_TEAM_ONE = gql`
+  mutation CREATE_TEAM_ONE($team_name: String!) {
+    payload: insert_POC_team_one(object: { name: $team_name }) {
+      id
+      name
+    }
+  }
+`;
