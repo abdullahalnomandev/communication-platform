@@ -99,24 +99,20 @@ export const GET_USER_BY_ID = gql`
   }
 `;
 
-export const GET_ALL_TEAM_MEMBERS = gql`
-  query GET_ALL_TEAM_MEMBERS($search_item: String!) {
-    payload: POC_users(where: { _or: [{ name: { _ilike: $search_item } }, { email: { _ilike: $search_item } }, { mobile: { _ilike: $search_item } }] }) {
-      id
-      updated_at
-      created_at
+export const GET_APP_USERS = gql`
+  query GET_ALL_USERS($limit: Int = 10, $offset: Int = 0, $search_item: String!) {
+    payload: POC_users(
+      limit: $limit
+      offset: $offset
+      where: {
+        _or: [{ email: { _ilike: $search_item } }, { name: { _ilike: $search_item } }, { mobile: { _ilike: $search_item } }, { role: { _ilike: $search_item } }]
+      }
+    ) {
       id
       name
       email
-      image_url
-      role
-      created_at
-      updated_at
-      account_id
       mobile
-      POC_accounts {
-        id
-      }
+      role
     }
   }
 `;

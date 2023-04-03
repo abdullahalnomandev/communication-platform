@@ -2,12 +2,13 @@ import { useRouter } from "next/router";
 import { Dispatch, SetStateAction, useState } from "react";
 import { useForm } from "react-hook-form";
 import { ImCross } from "react-icons/im";
-import { useQueryClient } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 import useFetch from "../../../hooks/useFatch";
 import { INSERT_ACCOUNT_ONE } from "../../../qql-api/account";
-import { GET_TEAM_MEMBERS } from "../../../qql-api/user";
+import { CREATE_TEAM_MEMBERS } from "../../../qql-api/team";
+import { GET_APP_USERS } from "../../../qql-api/user";
 import { getGraphQLClient } from "../../../services/graphql";
-import { IAccount, ITeamMembers } from "../../../tyeps";
+import { IAccount, IUser } from "../../../tyeps";
 interface IProps {
   addUserShowModal: Boolean;
   setAddUserShowModal: Dispatch<SetStateAction<boolean>>;
@@ -16,19 +17,21 @@ interface IProps {
   setMemberCount: Dispatch<SetStateAction<number>>;
 }
 
-interface ITeam {
-  name: string;
-  team_id: number;
-  user_id: number;
+interface IUserInfo {
+  team_id?: number;
+  name?: string;
+  user_id: number | any;
 }
 
 const AddGroupMember: React.FC<IProps> = ({ addUserShowModal, setAddUserShowModal, teamId, teamName, setMemberCount }) => {
-  const [addToCard, setAddToCard] = useState([] as any);
+  const [addToCard, setAddToCard] = useState([] as IUserInfo[]);
   const [searchInputText, setSearchInputText] = useState<string>("");
+  const [addTeamMembersData, setAddTeamMembersData] = useState([] as IUserInfo[]);
+  const [pending, setPending] = useState<boolean>(false);
 
   console.log(searchInputText);
 
-  console.log("addToCard", addToCard);
+  console.log("addTeamMembersData", addTeamMembersData);
 
   const queryClient = useQueryClient();
   const router = useRouter();
@@ -39,32 +42,72 @@ const AddGroupMember: React.FC<IProps> = ({ addUserShowModal, setAddUserShowModa
     return data;
   };
 
+  // Add team members
   // const { error, isError, isSuccess, mutate } = useMutation(insertData);
 
-  // const addTeamMember = useMutation(
-  //   async (team: ITeam) => {
-  //     console.log("TEAM", team);
-
-  //     const data = await (await getGraphQLClient()).request(CREATE_TEAM_MEMBERS, { team_id: team.team_id, user_id: team.user_id });
+  // const addTeamMembers: UseMutationResult<unknown, unknown, void, unknown> = useMutation(
+  //   async () => {
+  //     const data = await (await getGraphQLClient()).request(CREATE_TEAM_MEMBERS, { team_members: addTeamMembersData });
   //     return data;
   //   },
   //   {
   //     onSuccess: () => {
-  //       queryClient.invalidateQueries(["geTemMembers", teamId]);
+  //       queryClient.invalidateQueries(["getAllUsers"]);
+  //       setAddUserShowModal(false);
   //     }
   //   }
   // );
-  const { data } = useFetch<ITeamMembers[]>(["geTemMembers", searchInputText], GET_TEAM_MEMBERS, { team_id: teamId, search_item: `%${searchInputText}%` });
 
-  const handleAddToCard = (data: ITeam) => {
-    const isExistUser = addToCard.find((item: ITeam) => item.user_id === data.user_id);
-    const isInclude = addToCard.includes(isExistUser);
+  // const createUser = (user: IUser) => {
+  //   mutate(user, {
+  //     onSuccess: () => {
+  //       queryClient.invalidateQueries(["getAllUsers"]);
+  //       setAddUserShowModal(false);
+  //     }
+  //   });
+  // };
 
-    const filterUser = addToCard.filter((item: ITeam) => item.user_id !== data.user_id);
+  console.log("actual", addTeamMembersData, "main", [{ team_id: 7, user_id: 77 }]);
+  const insertTeamMember = async (variable: {}) => {
+    const data = await (await getGraphQLClient()).request(CREATE_TEAM_MEMBERS, variable);
+    return data;
+  };
+
+  const { error, isError, isSuccess, mutate } = useMutation(insertTeamMember);
+
+  const addTeamMembers = () => {
+    setPending(true);
+    mutate(
+      { team_members: addTeamMembersData },
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries(["getAllUsers", teamId]);
+          setAddUserShowModal(false);
+          setAddTeamMembersData([]);
+          setAddToCard([]);
+          alert("User added successfully.");
+          setPending(false);
+        }
+      }
+    );
+  };
+  if (error) {
+    console.error(error);
+  }
+
+  const { data: allUsers } = useFetch<IUser[]>(["getAllUsers", searchInputText], GET_APP_USERS, { search_item: `%${searchInputText}%` });
+
+  const handleAddToCard = (data: IUserInfo) => {
+    const isExistUser = addToCard.find((item: IUserInfo) => item.user_id === data.user_id);
+    const isInclude = addToCard.includes(isExistUser as IUserInfo);
+    const filterUser = addToCard.filter((item: IUserInfo) => item.user_id !== data.user_id);
+    const filterAddToTeamData = addTeamMembersData.filter((item: IUserInfo) => item.user_id !== data.user_id);
     if (isInclude) {
       setAddToCard(filterUser);
+      setAddTeamMembersData(filterAddToTeamData);
     } else {
       setAddToCard([...addToCard, data]);
+      setAddTeamMembersData([...addTeamMembersData, { team_id: teamId, user_id: data.user_id }]);
     }
   };
   return (
@@ -83,6 +126,7 @@ const AddGroupMember: React.FC<IProps> = ({ addUserShowModal, setAddUserShowModa
                     onClick={() => {
                       setAddUserShowModal(false);
                       setAddToCard([]);
+                      setAddTeamMembersData([]);
                     }}
                   >
                     {/* <span className="bg-transparent text-red  h-6 w-6 text-2xl block outline-none focus:outline-none">X</span> */}
@@ -92,14 +136,30 @@ const AddGroupMember: React.FC<IProps> = ({ addUserShowModal, setAddUserShowModa
                 {/*body*/}
                 <div className="relative p-6 flex-auto">
                   <div className="flex justify-center items-center gap-3 ">
-                    {addToCard.map(({ name }: ITeam, i: any) => (
+                    {addToCard.map(({ name }: IUserInfo, i: any) => (
                       <div key={i + 1}>
-                        <p className="bg-gray-400 text-white px-3 py-1 h-8 rounded-full">{name.split(" ")[0]}</p>
+                        <p className="bg-gray-400 text-white px-3 py-1 h-8 rounded-full">{name?.split(" ")[0]}</p>
                       </div>
                     ))}
                   </div>
-                  {addToCard.length > 0 && (
-                    <button className="text-white bg-blue-500 px-5 py-2 rounded-full text-center cursor-pointer  w-1/3 mt-7 mb-2 float-right mr-6">Save</button>
+                  {addToCard.length !== 0 && pending === false && (
+                    <button
+                      onClick={addTeamMembers}
+                      className=" add-button- cursor-pointer mr-auto text-white bg-blue-500 px-5 py-2 rounded-full text-center w-1/3 
+                    
+                    "
+                    >
+                      Save
+                    </button>
+                  )}
+                  {pending && (
+                    <button
+                      className=" add-button- cursor-pointer mr-auto text-white bg-blue-300 px-5 py-2 rounded-full text-center w-1/3 
+                    
+                    "
+                    >
+                      Loading...
+                    </button>
                   )}
                   <>
                     <div className="relative p-6 flex-auto -mb-6">
@@ -143,7 +203,7 @@ const AddGroupMember: React.FC<IProps> = ({ addUserShowModal, setAddUserShowModa
                         </tr>
                       </thead> */}
                       <tbody>
-                        {data?.payload.map(({ user_id, team_id, id, POC_user: { name, email, role, image_url } }, index) => (
+                        {allUsers?.payload.map(({ id, name, email, role, image_url }, index) => (
                           <tr key={index + 1} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                             <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                               <div className="flex items-center  gap-2">
@@ -165,14 +225,13 @@ const AddGroupMember: React.FC<IProps> = ({ addUserShowModal, setAddUserShowModa
                                   onClick={() => {
                                     const data = {
                                       name,
-                                      team_id,
-                                      user_id,
+                                      user_id: id
                                     };
                                     handleAddToCard(data);
                                   }}
-                                  style={{ backgroundColor: addToCard.find((item: ITeam) => item.user_id === user_id) ? "#ff4154" : "#22c55e" }}
+                                  style={{ backgroundColor: addToCard.find((item: IUserInfo) => item.user_id === id) ? "#ff4154" : "#22c55e" }}
                                 >
-                                  {addToCard.find((item: ITeam) => item.user_id === user_id) ? "Remove from cart" : "Add to team"}
+                                  {addToCard.find((item: IUserInfo) => item.user_id === id) ? "Remove from cart" : "Add to team"}
                                 </button>
                               </div>
                             </td>
