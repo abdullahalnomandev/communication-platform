@@ -18,7 +18,7 @@ const Inbox = () => {
 
   return (
     <div>
-      <Team showTeamModal={showTeamModal} setShowTeamModal={setShowTeamModal} />
+      <Team showTeamModal={showTeamModal} setShowTeamModal={setShowTeamModal} teamId={teamId} />
       <div className="grid grid-cols-12">
         <div className="col-span-12 sm:col-span-3 ">
           <Group SetTeamId={setTeamId} setShowTeamModal={setShowTeamModal} />

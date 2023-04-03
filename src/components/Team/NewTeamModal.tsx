@@ -1,31 +1,36 @@
-import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { ImCross } from "react-icons/im";
 import { useMutation, useQueryClient } from "react-query";
+import useFetch from "../../../hooks/useFatch";
 import { CREATE_TEAM_ONE } from "../../../qql-api/team";
+import { GET_APP_USERS } from "../../../qql-api/user";
 import { getGraphQLClient } from "../../../services/graphql";
+import { IUser } from "../../../tyeps";
 
 interface IProps {
   showTeamModal: Boolean;
   setShowTeamModal: React.Dispatch<React.SetStateAction<boolean>>;
+  teamId: number;
 }
 
 interface ITeam {
   team_name: string;
 }
 
-const NewTeamModal: React.FC<IProps> = ({ showTeamModal, setShowTeamModal }) => {
-  const queryClient = useQueryClient();
-  const router = useRouter();
+const NewTeamModal: React.FC<IProps> = ({ showTeamModal, setShowTeamModal, teamId }) => {
+  const [addAdminSatat, setAddAdminSatat] = useState([] as any);
+  const [stopLoof, setStopLoof] = useState(true);
 
+  const queryClient = useQueryClient();
   const { register, handleSubmit, reset } = useForm<ITeam>();
+  const { data: getAdmins } = useFetch<IUser[]>(["getAllUsers", teamId], GET_APP_USERS, { search_item: `%administrator%` });
   const insertData = async (variable: {}) => {
     const data = await (await getGraphQLClient()).request(CREATE_TEAM_ONE, variable);
     return data;
   };
 
   const { error, isError, isSuccess, mutate } = useMutation(insertData);
-
   const createUser = (team_data: ITeam) => {
     mutate(team_data, {
       onSuccess: () => {
@@ -40,6 +45,11 @@ const NewTeamModal: React.FC<IProps> = ({ showTeamModal, setShowTeamModal }) => 
     createUser(data);
   };
 
+  console.log("ADMIN_State", addAdminSatat);
+
+  useEffect(() => {
+    // midifyData;
+  }, [showTeamModal]);
   return (
     <>
       {showTeamModal ? (
