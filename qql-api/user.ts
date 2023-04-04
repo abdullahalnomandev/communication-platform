@@ -107,6 +107,7 @@ export const GET_ALL_USERS = gql`
       where: {
         _or: [{ email: { _ilike: $search_item } }, { name: { _ilike: $search_item } }, { mobile: { _ilike: $search_item } }, { role: { _ilike: $search_item } }]
       }
+      order_by: { name: asc }
     ) {
       id
       name

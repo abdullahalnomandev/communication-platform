@@ -77,7 +77,7 @@ const Message: React.FC<IProps> = ({ teamId }) => {
             alt="chat"
             className="w-34 text-center m-auto"
           />
-          <h1 className="text-4xl font-bold mb-4">Select a team.</h1>
+          <h1 className="text-4xl font-bold mb-4">Select a team</h1>
           <p className=" text-lg text-gray-400 ">
             Send and receive message without keeping your phone online. <br /> Use Communication Platform
           </p>

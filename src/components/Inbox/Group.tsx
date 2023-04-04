@@ -26,7 +26,7 @@ const Group: React.FC<IProps> = ({ SetTeamId, setShowTeamModal }) => {
 
       {/* Conversations  */}
       {isSearch && (
-        <ul className=" mb-[-6] max-h-[630px] divide-y divide-gray-700 divide-inherit overflow-auto overflow-y-auto sm:max-h-[440px] ">
+        <ul className=" mb-[-6] divide-y divide-gray-700 divide-inherit overflow-auto overflow-y-auto  ">
           {data?.payload?.map(({ name, id, created_at, POC_messages }) => (
             <div key={id} onClick={() => SetTeamId(id)} className=" flex cursor-pointer items-center justify-between  py-2 px-2 hover:bg-[#f0f2f5] md:mr-3">
               <div key={id} className="flex items-center justify-between gap-x-3 ">
