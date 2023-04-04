@@ -39,7 +39,6 @@ const Group: React.FC<IProps> = ({ SetTeamId, setShowTeamModal }) => {
                 </div>
               </div>
               <div className="con-time text-gray-500">
-                {/* <p>{new Date(new Date("2023-03-24T05:08:55.82267+00:00").toDateString(created_at)}</p> */}
                 <p>{new Date(created_at).toDateString()}</p>
               </div>
             </div>

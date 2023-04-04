@@ -1,4 +1,3 @@
-import { useRouter } from "next/router";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { ImCross } from "react-icons/im";
@@ -29,45 +28,13 @@ const AddGroupMember: React.FC<IProps> = ({ addUserShowModal, setAddUserShowModa
   const [addTeamMembersData, setAddTeamMembersData] = useState([] as IUserInfo[]);
   const [pending, setPending] = useState<boolean>(false);
 
-  console.log(searchInputText);
-
-  console.log("addTeamMembersData", addTeamMembersData);
-
   const queryClient = useQueryClient();
-  const router = useRouter();
-
   const { register, handleSubmit, reset } = useForm<IAccount>();
   const insertData = async (variable: {}) => {
     const data = await (await getGraphQLClient()).request(INSERT_ACCOUNT_ONE, variable);
     return data;
   };
 
-  // Add team members
-  // const { error, isError, isSuccess, mutate } = useMutation(insertData);
-
-  // const addTeamMembers: UseMutationResult<unknown, unknown, void, unknown> = useMutation(
-  //   async () => {
-  //     const data = await (await getGraphQLClient()).request(CREATE_TEAM_MEMBERS, { team_members: addTeamMembersData });
-  //     return data;
-  //   },
-  //   {
-  //     onSuccess: () => {
-  //       queryClient.invalidateQueries(["getAllUsers"]);
-  //       setAddUserShowModal(false);
-  //     }
-  //   }
-  // );
-
-  // const createUser = (user: IUser) => {
-  //   mutate(user, {
-  //     onSuccess: () => {
-  //       queryClient.invalidateQueries(["getAllUsers"]);
-  //       setAddUserShowModal(false);
-  //     }
-  //   });
-  // };
-
-  console.log("actual", addTeamMembersData, "main", [{ team_id: 7, user_id: 77 }]);
   const insertTeamMember = async (variable: {}) => {
     const data = await (await getGraphQLClient()).request(CREATE_TEAM_MEMBERS, variable);
     return data;
@@ -176,37 +143,9 @@ const AddGroupMember: React.FC<IProps> = ({ addUserShowModal, setAddUserShowModa
                             placeholder=" Name , Email or phone number"
                           />
                         </div>
-                        {/* <div className="flex items-center justify-end p-6  border-solid rounded-b">
-                          <button
-                            className="text-red-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                            type="button"
-                            onClick={() => setAddUserShowModal(false)}
-                          >
-                            Close
-                          </button>
-                          <input
-                            type="submit"
-                            value="Create Account"
-                            className="bg-blue-500 text-white active:bg-blue-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 cursor-pointer"
-                          />
-                        </div> */}
                       </form>
                     </div>
                     <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                      {/* <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                        <tr>
-                          <th scope="col" className="px-6 py-3">
-                            User Name
-                          </th>
-
-                          <th scope="col" className="px-6 py-3">
-                            <div className="flex items-center">Role</div>
-                          </th>
-                          <th scope="col" className="px-6 py-3">
-                            <div className="flex items-center">Action</div>
-                          </th>
-                        </tr>
-                      </thead> */}
                       <tbody>
                         {allUsers?.payload.map(({ id, name, email, role, image_url }, index) => (
                           <tr key={index + 1} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">

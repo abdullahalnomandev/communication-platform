@@ -1,4 +1,3 @@
-import { useRouter } from "next/router";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { ImCross } from "react-icons/im";
@@ -24,7 +23,6 @@ interface ITeam {
 const GroupMembers: React.FC<IProps> = ({ showModal, setShowModal, teamId, teamName, setMemberCount }) => {
   const [isDelete, setIsDelete] = useState<boolean>(false);
   const queryClient = useQueryClient();
-  const router = useRouter();
 
   const { register, handleSubmit, reset } = useForm<IAccount>();
   const insertData = async (variable: {}) => {
@@ -47,10 +45,6 @@ const GroupMembers: React.FC<IProps> = ({ showModal, setShowModal, teamId, teamN
       },
     }
   );
-
-  // const deleteTeamMemberOne = (user_id: number, team_id: number) => {
-  //   console.log(user_id, team_id);
-  // };
 
   const { data } = useFetch<ITeamMembers[]>(["geTemMembers", teamId], GET_TEAM_MEMBERS, { team_id: teamId, search_item: "%%" });
 

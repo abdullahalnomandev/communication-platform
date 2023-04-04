@@ -49,9 +49,7 @@ const Message: React.FC<IProps> = ({ teamId }) => {
 
   const sender = Number(session?.userId);
 
-  // const teamDetail = team;
   const teamName = teamDetails ? teamDetails?.payload[0]?.name : "Loading....";
-
   const handleShowModal = () => {
     setShowModal(true);
   };

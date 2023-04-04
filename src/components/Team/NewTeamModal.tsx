@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { ImCross } from "react-icons/im";
 import { useMutation, useQueryClient } from "react-query";
@@ -29,29 +29,20 @@ interface IInputField {
     userIds: IuserData;
   };
 }
-const NewTeamModal: React.FC<IProps> = ({ showTeamModal, setShowTeamModal, teamId }) => {
-  const [addAdminSatat, setAddAdminSatat] = useState([] as any);
-  const [stopLoof, setStopLoof] = useState(true);
-  const [userIds, setUserIds] = useState<IuserData>([] as any);
-
+const NewTeamModal: React.FC<IProps> = ({ showTeamModal, setShowTeamModal }) => {
   const queryClient = useQueryClient();
   const { register, handleSubmit, reset } = useForm<ITeam>();
-
-  // let filterUserAdminsId: IuserData = [] as any;
 
   const { data: userDataInfo } = useFetch<IUser[]>(["getUserData", 11], GET_USERS_DATA, { limit: 20, offset: 0 });
   const filterAdmin: any = userDataInfo?.payload.filter(({ role }) => role === "administrator");
   const filterUserAdmin = filterAdmin?.map((user: { id: any }) => ({ user_id: user.id }));
-  // filterUserAdminsId?.push(filterUserAdmin);
-
-  // console.log("get_id_of_user", filterUserAdminsId);
 
   const create_new_team = async (variable: {}) => {
     const data = await (await getGraphQLClient()).request(CREATE_NEW_TEAM, variable);
     return data;
   };
 
-  const { error, isError, isSuccess, mutate } = useMutation(create_new_team);
+  const { mutate } = useMutation(create_new_team);
   const createUser = (team_data: IInputField) => {
     mutate(team_data, {
       onSuccess: () => {
@@ -67,12 +58,9 @@ const NewTeamModal: React.FC<IProps> = ({ showTeamModal, setShowTeamModal, teamI
       teamName: data.team_name,
       userIds: filterUserAdmin,
     };
-    console.log("ctd", creatingData);
 
     createUser(creatingData as any);
   };
-
-  console.log("ADMIN_State", addAdminSatat, error);
 
   useEffect(() => {
     // midifyData;
@@ -94,7 +82,6 @@ const NewTeamModal: React.FC<IProps> = ({ showTeamModal, setShowTeamModal, teamI
                       setShowTeamModal(false);
                     }}
                   >
-                    {/* <span className="bg-transparent text-red  h-6 w-6 text-2xl block outline-none focus:outline-none">X</span> */}
                     <ImCross className="text-sm ml-1" />
                   </button>
                 </div>

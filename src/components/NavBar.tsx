@@ -23,7 +23,7 @@ const NavBar = () => {
   const route = [
     { id: 1, path: "/", name: "HOME" },
     { id: 2, path: "/users", name: "USERS" },
-    { id: 3, path: "/inbox", name: "Inbox" }
+    { id: 3, path: "/inbox", name: "Inbox" },
   ];
 
   const routes = session ? route : route.slice(0, 1);
@@ -36,10 +36,6 @@ const NavBar = () => {
             <Image src="https://flowbite.com/docs/images/logo.svg" className="mr-3 h-6 sm:h-9" alt="Flowbite Logo" width={50} height={100} />
             <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-black">Communication Platform</span>
           </Link>
-
-          {/* <div onClick={pushRoute} className=" bg- flex h-11 w-11 cursor-pointer items-center justify-center rounded-full bg-gray-400 text-center md:order-2">
-            <BiMessageRoundedDots className=" text-3xl text-white " />
-          </div> */}
           <div className="hidden w-full items-center justify-between md:order-1 md:flex md:w-auto" id="navbar-sticky">
             <ul className="mt-4 flex flex-col rounded-lg border  0 p-4  md:mt-0 md:flex-row md:space-x-8 md:border-0  md:text-sm md:font-medium transition ">
               {session && (
