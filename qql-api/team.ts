@@ -2,7 +2,7 @@ import gql from "graphql-tag";
 
 export const GET_TEAMS = gql`
   query GET_TEAMS($limit: Int = 10, $offset: Int = 0) {
-    payload: POC_team(limit: $limit, offset: $offset) {
+    payload: POC_team(limit: $limit, offset: $offset, order_by: { created_at: desc }) {
       id
       name
       creator_id
@@ -62,11 +62,3 @@ export const CREATE_NEW_TEAM = gql`
     }
   }
 `;
-
-// {
-//   "teamName": "NOMAN ACTION",
-//   "userIds":[
-//     {"user_id": 77},
-//     {"user_id": 54}
-//   ]
-// }

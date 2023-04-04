@@ -1,6 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import { useSession } from "next-auth/react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AiOutlineUserAdd } from "react-icons/ai";
 import { BsFillArrowRightCircleFill } from "react-icons/bs";
 import { useMutation, useQueryClient } from "react-query";
@@ -54,6 +54,20 @@ const Message: React.FC<IProps> = ({ teamId }) => {
     setShowModal(true);
   };
 
+  const chatListRef = useRef<HTMLDivElement>(null);
+
+  // Scroll the chat list to the bottom on mount and when messages update
+  useEffect(() => {
+    scrollToBottom();
+  }, [data]);
+
+  // Function to scroll the chat list to the bottom
+  function scrollToBottom() {
+    chatListRef?.current?.scrollTo({
+      top: chatListRef.current.scrollHeight,
+      behavior: "auto",
+    });
+  }
   return (
     <>
       <div style={{ display: teamId == 0 ? "block" : "none" }} className=" border-l flex h-screen  items-center justify-center">
@@ -102,7 +116,7 @@ const Message: React.FC<IProps> = ({ teamId }) => {
           </div>
         </div>
         <div className="message-content ">
-          <div className="content relative max-h-[700px] md:max-h-[750px]  overflow-auto">
+          <div ref={chatListRef} className="content relative max-h-[700px] md:max-h-[750px]  overflow-auto ">
             {data?.payload?.map(({ id, text, sender_id, POC_user }) => (
               <>
                 {!(sender === sender_id) && (
