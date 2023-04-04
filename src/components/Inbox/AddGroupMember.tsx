@@ -6,7 +6,7 @@ import { useMutation, useQueryClient } from "react-query";
 import useFetch from "../../../hooks/useFatch";
 import { INSERT_ACCOUNT_ONE } from "../../../qql-api/account";
 import { CREATE_TEAM_MEMBERS } from "../../../qql-api/team";
-import { GET_APP_USERS } from "../../../qql-api/user";
+import { GET_ALL_USERS } from "../../../qql-api/user";
 import { getGraphQLClient } from "../../../services/graphql";
 import { IAccount, IUser } from "../../../tyeps";
 interface IProps {
@@ -99,7 +99,7 @@ const AddGroupMember: React.FC<IProps> = ({ addUserShowModal, setAddUserShowModa
     }
   }, [isError]);
 
-  const { data: allUsers } = useFetch<IUser[]>(["getAllUsers", searchInputText], GET_APP_USERS, { search_item: `%${searchInputText}%` });
+  const { data: allUsers } = useFetch<IUser[]>(["getAllUsers", searchInputText], GET_ALL_USERS, { search_item: `%${searchInputText}%` });
 
   const handleAddToCard = (data: IUserInfo) => {
     const isExistUser = addToCard.find((item: IUserInfo) => item.user_id === data.user_id);

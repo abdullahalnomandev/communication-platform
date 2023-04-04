@@ -1,11 +1,11 @@
 import { useRouter } from "next/router";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { ImCross } from "react-icons/im";
 import { useMutation, useQueryClient } from "react-query";
 import useFetch from "../../../hooks/useFatch";
 import { INSERT_ACCOUNT_ONE } from "../../../qql-api/account";
-import { DELETE_TEAM_MEMBER, GET_APP_USERS } from "../../../qql-api/user";
+import { DELETE_TEAM_MEMBER, GET_TEAM_MEMBERS } from "../../../qql-api/user";
 import { getGraphQLClient } from "../../../services/graphql";
 import { IAccount, ITeamMembers } from "../../../tyeps";
 interface IProps {
@@ -52,7 +52,13 @@ const GroupMembers: React.FC<IProps> = ({ showModal, setShowModal, teamId, teamN
   //   console.log(user_id, team_id);
   // };
 
-  const { data } = useFetch<ITeamMembers[]>(["geTemMembers", teamId], GET_APP_USERS, { team_id: teamId, search_item: "%%" });
+  const { data } = useFetch<ITeamMembers[]>(["geTemMembers", teamId], GET_TEAM_MEMBERS, { team_id: teamId, search_item: "%%" });
+
+  console.log("members", data, teamId);
+
+  useEffect(() => {
+    setMemberCount(data?.payload?.length as number);
+  }, [data]);
 
   return (
     <>
@@ -92,7 +98,7 @@ const GroupMembers: React.FC<IProps> = ({ showModal, setShowModal, teamId, teamN
                           </tr>
                         </thead>
                         <tbody>
-                          {data?.payload.map(({ user_id, team_id, id, POC_user: { name, email, role, image_url } }, index) => (
+                          {data?.payload?.map(({ user_id, team_id, id, POC_user: { name, email, role, image_url } }, index) => (
                             <tr key={index + 1} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                               <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                 <div className="flex items-center  gap-2">

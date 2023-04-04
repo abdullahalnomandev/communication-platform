@@ -3,8 +3,8 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { ImCross } from "react-icons/im";
 import { useMutation, useQueryClient } from "react-query";
 import useFetch from "../../../hooks/useFatch";
-import { CREATE_TEAM_ONE } from "../../../qql-api/team";
-import { GET_APP_USERS } from "../../../qql-api/user";
+import { CREATE_NEW_TEAM } from "../../../qql-api/team";
+import { GET_USERS_DATA } from "../../../qql-api/user";
 import { getGraphQLClient } from "../../../services/graphql";
 import { IUser } from "../../../tyeps";
 
@@ -18,20 +18,41 @@ interface ITeam {
   team_name: string;
 }
 
+interface IuserData {
+  push(filterUserAdmin: any): unknown;
+  user_id: number;
+}
+
+interface IInputField {
+  creatingData: {
+    teamName: string;
+    userIds: IuserData;
+  };
+}
 const NewTeamModal: React.FC<IProps> = ({ showTeamModal, setShowTeamModal, teamId }) => {
   const [addAdminSatat, setAddAdminSatat] = useState([] as any);
   const [stopLoof, setStopLoof] = useState(true);
+  const [userIds, setUserIds] = useState<IuserData>([] as any);
 
   const queryClient = useQueryClient();
   const { register, handleSubmit, reset } = useForm<ITeam>();
-  const { data: getAdmins } = useFetch<IUser[]>(["getAllUsers", teamId], GET_APP_USERS, { search_item: `%administrator%` });
-  const insertData = async (variable: {}) => {
-    const data = await (await getGraphQLClient()).request(CREATE_TEAM_ONE, variable);
+
+  // let filterUserAdminsId: IuserData = [] as any;
+
+  const { data: userDataInfo } = useFetch<IUser[]>(["getUserData", 11], GET_USERS_DATA, { limit: 20, offset: 0 });
+  const filterAdmin: any = userDataInfo?.payload.filter(({ role }) => role === "administrator");
+  const filterUserAdmin = filterAdmin?.map((user: { id: any }) => ({ user_id: user.id }));
+  // filterUserAdminsId?.push(filterUserAdmin);
+
+  // console.log("get_id_of_user", filterUserAdminsId);
+
+  const create_new_team = async (variable: {}) => {
+    const data = await (await getGraphQLClient()).request(CREATE_NEW_TEAM, variable);
     return data;
   };
 
-  const { error, isError, isSuccess, mutate } = useMutation(insertData);
-  const createUser = (team_data: ITeam) => {
+  const { error, isError, isSuccess, mutate } = useMutation(create_new_team);
+  const createUser = (team_data: IInputField) => {
     mutate(team_data, {
       onSuccess: () => {
         queryClient.invalidateQueries(["getTeams"]);
@@ -42,10 +63,16 @@ const NewTeamModal: React.FC<IProps> = ({ showTeamModal, setShowTeamModal, teamI
   };
 
   const onSubmit: SubmitHandler<ITeam> = (data) => {
-    createUser(data);
+    const creatingData = {
+      teamName: data.team_name,
+      userIds: filterUserAdmin,
+    };
+    console.log("ctd", creatingData);
+
+    createUser(creatingData as any);
   };
 
-  console.log("ADMIN_State", addAdminSatat);
+  console.log("ADMIN_State", addAdminSatat, error);
 
   useEffect(() => {
     // midifyData;

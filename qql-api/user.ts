@@ -99,7 +99,7 @@ export const GET_USER_BY_ID = gql`
   }
 `;
 
-export const GET_APP_USERS = gql`
+export const GET_ALL_USERS = gql`
   query GET_ALL_USERS($limit: Int = 10, $offset: Int = 0, $search_item: String!) {
     payload: POC_users(
       limit: $limit
@@ -118,7 +118,7 @@ export const GET_APP_USERS = gql`
 `;
 
 export const UPDATE_USER_BY_ID = gql`
-  mutation UPDATE_USER_BY_ID($user_id: bigint = "", $updated_value: POC_users_set_input = {}) {
+  mutation UPDATE_USER_BY_ID($user_id: bigint!, $updated_value: POC_users_set_input = {}) {
     payload: update_POC_users_by_pk(pk_columns: { id: $user_id }, _set: $updated_value) {
       id
       email

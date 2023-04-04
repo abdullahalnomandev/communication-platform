@@ -48,3 +48,25 @@ export const CREATE_TEAM_ONE = gql`
     }
   }
 `;
+
+export const CREATE_NEW_TEAM = gql`
+  mutation CREATE_NEW_TEAM($teamName: String!, $userIds: [POC_team_members_insert_input!]!) {
+    payload: insert_POC_team(objects: [{ name: $teamName, POC_team_members: { data: $userIds } }]) {
+      affected_rows
+      returning {
+        id
+        name
+        account_id
+        creator_id
+      }
+    }
+  }
+`;
+
+// {
+//   "teamName": "NOMAN ACTION",
+//   "userIds":[
+//     {"user_id": 77},
+//     {"user_id": 54}
+//   ]
+// }
