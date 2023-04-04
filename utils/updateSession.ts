@@ -33,20 +33,10 @@ export const updateSession = async (accountId: string) => {
   const res = await signIn("credentials", {
     email: "esha@gmail.ckom",
     password: "555555",
-    redirect: false
+    redirect: false,
   });
 
   console.log("res", res);
 
-  // if (session) {
-  //   // Update the user session data
-  //   (session as CustomSession).token = encoded.data.token;
-  //   (session as CustomSession).accountId = accountId;
-  //   await getSession({ update: true } as any);
-  // }
-  // await getSession().then((session) => {
-  //   // session.user.email = "hello";
-  //   console.log("then", session);
-  // });
   console.log(await getSession());
 };
