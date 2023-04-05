@@ -6,12 +6,15 @@ import useFetch from "../../../hooks/useFatch";
 import { DELETE_USER_BY_ID, GET_USERS_DATA } from "../../../qql-api/user";
 import { getGraphQLClient } from "../../../services/graphql";
 import { IUser } from "../../../tyeps";
-import AddUserModal from "../../components/AddUserModal";
+import AddUserModal from "../../components/Users/UserMutationModal";
 const Users = () => {
   const queryClient = useQueryClient();
   const [showModal, setShowModal] = useState(false);
   const [userId, setUserId] = useState<number | null | undefined>(null);
+  const [userInfo, setUserInfo] = useState<IUser>({name:"",email:"",mobile:"",role:""} as IUser);
 
+  console.log("mobileKOY",userInfo);
+  
   const deleteUserById = useMutation(
     async (id: number | undefined) => {
       const data = await (await getGraphQLClient()).request(DELETE_USER_BY_ID, { user_id: id });
@@ -20,12 +23,14 @@ const Users = () => {
     {
       onSuccess: () => {
         queryClient.invalidateQueries(["getUserData", 11]);
-      },
+      }
     }
   );
 
   const { data } = useFetch<IUser[]>(["getUserData", 11], GET_USERS_DATA, { limit: 20, offset: 0 });
   // const { data: getUser } = useFetch<IUser[]>(["findUserData", 11], FIND_USER_ONE, { email: "abdullahalnoman1512@gmail.com" });
+
+  console.log("getting user data", data);
 
   return (
     <>
@@ -40,13 +45,20 @@ const Users = () => {
             type="button"
             onClick={() => {
               setShowModal(true);
+              setUserInfo({} as IUser);
               setUserId(null);
             }}
           >
             Add User
           </button>
         </div>
-        <AddUserModal title="NOMAN " showModal={showModal} setShowModal={setShowModal} userId={userId} />
+        <AddUserModal
+         setUserId={setUserId} 
+         userInfo={userInfo} 
+         showModal={showModal}
+          setShowModal={setShowModal} 
+          userId={userId}
+          setUserInfo={setUserInfo} />
         <div className="relative overflow-x-auto shadow-md sm:rounded-sm ">
           <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
             <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
@@ -66,7 +78,7 @@ const Users = () => {
               </tr>
             </thead>
             <tbody>
-              {data?.payload.map(({ id, name, email, role, image_url }, index) => (
+              {data?.payload.map(({ id, name, email, role, image_url, mobile }, index) => (
                 <tr key={index + 1} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                   <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                     <div className="flex items-center  gap-2">
@@ -79,7 +91,9 @@ const Users = () => {
                     </div>
                   </th>
                   <td className="px-6 py-4">{email}</td>
-                  <td className="px-6 py-4">{role}</td>
+                  <td className="px-6 py-4">
+                    {role} -{mobile}
+                  </td>
                   <td className="px-6 py-4 text-left">
                     <div className="flex gap-2  ">
                       <button
@@ -87,6 +101,7 @@ const Users = () => {
                         onClick={() => {
                           setShowModal(true);
                           setUserId(id);
+                          setUserInfo({ id, name, email, mobile, role });
                         }}
                       >
                         Edit

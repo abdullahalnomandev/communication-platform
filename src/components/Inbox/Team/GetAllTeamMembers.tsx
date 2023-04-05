@@ -2,11 +2,11 @@ import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { ImCross } from "react-icons/im";
 import { useMutation, useQueryClient } from "react-query";
-import useFetch from "../../../hooks/useFatch";
-import { INSERT_ACCOUNT_ONE } from "../../../qql-api/account";
-import { DELETE_TEAM_MEMBER, GET_TEAM_MEMBERS } from "../../../qql-api/user";
-import { getGraphQLClient } from "../../../services/graphql";
-import { IAccount, ITeamMembers } from "../../../tyeps";
+import useFetch from "../../../../hooks/useFatch";
+import { INSERT_ACCOUNT_ONE } from "../../../../qql-api/account";
+import { DELETE_TEAM_MEMBER, GET_TEAM_MEMBERS } from "../../../../qql-api/user";
+import { getGraphQLClient } from "../../../../services/graphql";
+import { IAccount, ITeamMembers } from "../../../../tyeps";
 interface IProps {
   showModal: Boolean;
   setShowModal: Dispatch<SetStateAction<boolean>>;
@@ -42,7 +42,7 @@ const GroupMembers: React.FC<IProps> = ({ showModal, setShowModal, teamId, teamN
       onSuccess: () => {
         queryClient.invalidateQueries(["geTemMembers"]);
         setIsDelete(false);
-      },
+      }
     }
   );
 
@@ -115,7 +115,7 @@ const GroupMembers: React.FC<IProps> = ({ showModal, setShowModal, teamId, teamN
                                     onClick={() => {
                                       const data = {
                                         team_id,
-                                        user_id,
+                                        user_id
                                       };
                                       deleteTeamMember.mutate(data);
                                     }}

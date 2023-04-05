@@ -4,13 +4,12 @@ import { useEffect, useRef, useState } from "react";
 import { AiOutlineUserAdd } from "react-icons/ai";
 import { BsFillArrowRightCircleFill } from "react-icons/bs";
 import { useMutation, useQueryClient } from "react-query";
-import useFetch from "../../../hooks/useFatch";
-import { CREATE_MESSAGE, GET_MESSAGE } from "../../../qql-api/message";
-import { GET_TEAM_ONE } from "../../../qql-api/team";
-import { getGraphQLClient } from "../../../services/graphql";
-import { IMessage, ITeam } from "../../../tyeps";
-import AddGroupMember from "./AddGroupMember";
-import GetAllGroupMembers from "./GetAllGroupMembers";
+import useFetch from "../../../../hooks/useFatch";
+import { CREATE_MESSAGE, GET_MESSAGE } from "../../../../qql-api/message";
+import { GET_TEAM_ONE } from "../../../../qql-api/team";
+import { getGraphQLClient } from "../../../../services/graphql";
+import { IMessage, ITeam } from "../../../../tyeps";
+import AddTeamMember from "../Team/AddTeamMember";
 
 interface IProps {
   teamId: number;
@@ -42,7 +41,7 @@ const Message: React.FC<IProps> = ({ teamId }) => {
         onSuccess: () => {
           queryClient.invalidateQueries(["getMessage", teamId]);
           setMessage("");
-        },
+        }
       }
     );
   };
@@ -65,7 +64,7 @@ const Message: React.FC<IProps> = ({ teamId }) => {
   function scrollToBottom() {
     chatListRef?.current?.scrollTo({
       top: chatListRef.current.scrollHeight,
-      behavior: "auto",
+      behavior: "auto"
     });
   }
   return (
@@ -84,8 +83,8 @@ const Message: React.FC<IProps> = ({ teamId }) => {
         </div>
       </div>
       <div style={{ display: teamId == 0 ? "none" : "block" }} className=" border-l min-h-screen relative">
-        <GetAllGroupMembers showModal={showModal} setMemberCount={setMemberCount} setShowModal={setShowModal} teamId={teamId} teamName={teamName} />
-        <AddGroupMember
+        <AddTeamMember showModal={showModal} setMemberCount={setMemberCount} setShowModal={setShowModal} teamId={teamId} teamName={teamName} />
+        <AddTeamMember
           setAddUserShowModal={setAddUserShowModal}
           setMemberCount={setMemberCount}
           addUserShowModal={addUserShowModal}
@@ -116,7 +115,7 @@ const Message: React.FC<IProps> = ({ teamId }) => {
           </div>
         </div>
         <div className="message-content ">
-          <div ref={chatListRef} className="content relative max-h-[700px] md:max-h-[750px]  overflow-auto ">
+          <div ref={chatListRef} className="content relative max-h-[700px] md:max-h-[450px]  overflow-auto ">
             {data?.payload?.map(({ id, text, sender_id, POC_user }) => (
               <>
                 {!(sender === sender_id) && (

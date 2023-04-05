@@ -2,12 +2,12 @@ import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { ImCross } from "react-icons/im";
 import { useMutation, useQueryClient } from "react-query";
-import useFetch from "../../../hooks/useFatch";
-import { INSERT_ACCOUNT_ONE } from "../../../qql-api/account";
-import { CREATE_TEAM_MEMBERS } from "../../../qql-api/team";
-import { GET_ALL_USERS } from "../../../qql-api/user";
-import { getGraphQLClient } from "../../../services/graphql";
-import { IAccount, IUser } from "../../../tyeps";
+import useFetch from "../../../../hooks/useFatch";
+import { INSERT_ACCOUNT_ONE } from "../../../../qql-api/account";
+import { CREATE_TEAM_MEMBERS } from "../../../../qql-api/team";
+import { GET_ALL_USERS } from "../../../../qql-api/user";
+import { getGraphQLClient } from "../../../../services/graphql";
+import { IAccount, IUser } from "../../../../tyeps";
 interface IProps {
   addUserShowModal: Boolean;
   setAddUserShowModal: Dispatch<SetStateAction<boolean>>;
@@ -22,7 +22,7 @@ interface IUserInfo {
   user_id: number | any;
 }
 
-const AddGroupMember: React.FC<IProps> = ({ addUserShowModal, setAddUserShowModal, teamId, teamName, setMemberCount }) => {
+const AddTeamMember: React.FC<IProps> = ({ addUserShowModal, setAddUserShowModal, teamId, teamName, setMemberCount }) => {
   const [addToCard, setAddToCard] = useState([] as IUserInfo[]);
   const [searchInputText, setSearchInputText] = useState<string>("");
   const [addTeamMembersData, setAddTeamMembersData] = useState([] as IUserInfo[]);
@@ -54,7 +54,7 @@ const AddGroupMember: React.FC<IProps> = ({ addUserShowModal, setAddUserShowModa
           setAddToCard([]);
           alert("User added successfully.");
           setPending(false);
-        },
+        }
       }
     );
   };
@@ -169,7 +169,7 @@ const AddGroupMember: React.FC<IProps> = ({ addUserShowModal, setAddUserShowModa
                                   onClick={() => {
                                     const data = {
                                       name,
-                                      user_id: id,
+                                      user_id: id
                                     };
                                     handleAddToCard(data);
                                   }}
@@ -195,4 +195,4 @@ const AddGroupMember: React.FC<IProps> = ({ addUserShowModal, setAddUserShowModa
   );
 };
 
-export default AddGroupMember;
+export default AddTeamMember;

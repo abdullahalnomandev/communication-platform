@@ -1,8 +1,9 @@
+import { useRouter } from "next/router";
 import { Dispatch, SetStateAction, useRef, useState } from "react";
-import { AiOutlineSearch } from "react-icons/ai";
-import useFetch from "../../../hooks/useFatch";
-import { GET_TEAMS } from "../../../qql-api/team";
-import { ITeam } from "../../../tyeps";
+import { AiFillHome, AiOutlineSearch } from "react-icons/ai";
+import useFetch from "../../../../hooks/useFatch";
+import { GET_TEAMS } from "../../../../qql-api/team";
+import { ITeam } from "../../../../tyeps";
 
 interface IProps {
   SetTeamId: Dispatch<SetStateAction<number>>;
@@ -15,8 +16,14 @@ const Group: React.FC<IProps> = ({ SetTeamId, setShowTeamModal }) => {
 
   const chatListRef = useRef(null);
 
+  const router = useRouter();
+
   return (
     <div className="relative min-h-screen">
+      <div className="flex justify-center items-center py-3 text-blue-600 cursor-pointer" onClick={() => router.push("/")}>
+        <AiFillHome className="text-2xl" />
+        <p>Home</p>
+      </div>
       <div className="chat-header" onClick={() => setIsSearch(true)}>
         <div className=" search mx-2 my-2 flex cursor-pointer items-center justify-start gap-2 rounded-full bg-slate-100 py-2 pl-3">
           <AiOutlineSearch />
@@ -26,7 +33,7 @@ const Group: React.FC<IProps> = ({ SetTeamId, setShowTeamModal }) => {
 
       {/* Conversations  */}
       {isSearch && (
-        <ul className=" mb-[-6] divide-y divide-gray-700 divide-inherit overflow-auto overflow-y-auto  ">
+        <ul className=" mb-[-6] divide-y divide-gray-700 divide-inherit overflow-y-auto  max-h-[500px] ">
           {data?.payload?.map(({ name, id, created_at, POC_messages }) => (
             <div key={id} onClick={() => SetTeamId(id)} className=" flex cursor-pointer items-center justify-between  py-2 px-2 hover:bg-[#f0f2f5] md:mr-3">
               <div key={id} className="flex items-center justify-between gap-x-3 ">

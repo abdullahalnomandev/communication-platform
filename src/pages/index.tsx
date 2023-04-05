@@ -8,9 +8,9 @@ const HomePage = () => {
 
   const router = useRouter();
 
-  if (session) {
-    session && router.push("/inbox");
-  }
+  // if (session) {
+  //   session && router.push("/inbox");
+  // }
 
   return (
     <>

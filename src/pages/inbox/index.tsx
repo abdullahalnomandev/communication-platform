@@ -1,8 +1,8 @@
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useState } from "react";
-import Group from "../../components/Inbox/Group";
-import Message from "../../components/Inbox/Message";
+import Message from "../../components/Inbox/Message/Message";
+import Group from "../../components/Inbox/Team/Team";
 import Team from "../../components/Team";
 
 const Inbox = () => {

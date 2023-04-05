@@ -8,6 +8,7 @@ export const GET_USERS_DATA = gql`
       name
       image_url
       role
+      mobile
     }
   }
 `;
