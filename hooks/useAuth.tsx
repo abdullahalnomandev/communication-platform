@@ -1,18 +1,23 @@
 import { useSession } from "next-auth/react";
+import { GET_USER_BY_ID } from "../qql-api/user";
+import { IUser } from "../tyeps";
+import useFetch from "./useFatch";
 
 const useAuth = () => {
-  const { data: session } = useSession();
+  const { data: session }: any = useSession();
 
-  const { name, email, image, userRole, accountId }: any = session?.user;
+  const { data: userProfile }: any = useFetch<IUser[]>(["getUserData", session?.userId], GET_USER_BY_ID, { user_id: session?.userId });
 
+  console.log("userProfile", userProfile?.payload);
+  if(userProfile){
   return {
-    name,
-    email,
-    image,
-    role: userRole,
-    accountId,
-    session,
+    id:userProfile?.payload?.id ,
+    name:userProfile?.payload?.name ,
+    email:userProfile?.payload?.email ,
+
   };
+  }
+
 };
 
 export default useAuth;

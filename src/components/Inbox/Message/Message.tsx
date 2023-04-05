@@ -1,15 +1,18 @@
 /* eslint-disable @next/next/no-img-element */
 import { useSession } from "next-auth/react";
 import { useEffect, useRef, useState } from "react";
-import { AiOutlineUserAdd } from "react-icons/ai";
+import { AiFillDelete, AiOutlineUserAdd } from "react-icons/ai";
 import { BsFillArrowRightCircleFill } from "react-icons/bs";
+import { FaEdit } from "react-icons/fa";
 import { useMutation, useQueryClient } from "react-query";
 import useFetch from "../../../../hooks/useFatch";
-import { CREATE_MESSAGE, GET_MESSAGE } from "../../../../qql-api/message";
+import { CREATE_MESSAGE, DELETE_MESSAGE_BY_ID, GET_MESSAGE } from "../../../../qql-api/message";
 import { GET_TEAM_ONE } from "../../../../qql-api/team";
 import { getGraphQLClient } from "../../../../services/graphql";
 import { IMessage, ITeam } from "../../../../tyeps";
 import AddTeamMember from "../Team/AddTeamMember";
+import GroupMembers from "../Team/GetAllTeamMembers";
+import EditMessageModal from "./EditMessageModal";
 
 interface IProps {
   teamId: number;
@@ -22,6 +25,9 @@ const Message: React.FC<IProps> = ({ teamId }) => {
   const [showModal, setShowModal] = useState<boolean>(false);
   const [addUserShowModal, setAddUserShowModal] = useState<boolean>(false);
   const [memberCount, setMemberCount] = useState(0);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editMessage, setEditMessage] = useState<IMessage | any>({text:""} as IMessage );
+  
 
   const { data } = useFetch<IMessage[]>(["getMessage", teamId], GET_MESSAGE, { team_id: teamId, limit: 1000, offset: 0 });
   const { data: teamDetails } = useFetch<ITeam[]>(["getTeam", teamId], GET_TEAM_ONE, { team_id: teamId });
@@ -32,6 +38,7 @@ const Message: React.FC<IProps> = ({ teamId }) => {
     return data;
   };
 
+  // CREATE_MESSAGE
   const { error, isError, isSuccess, mutate } = useMutation(insertData);
 
   const createUser = () => {
@@ -45,6 +52,22 @@ const Message: React.FC<IProps> = ({ teamId }) => {
       }
     );
   };
+
+  // DELETE_MESSAGE
+    const deleteMessageById = useMutation(
+      async (id: number | undefined) => {
+        const data = await(await getGraphQLClient()).request(DELETE_MESSAGE_BY_ID, { message_id: id });
+        return data;
+      },
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries(["getMessage"]);
+        }
+      }
+    );
+
+
+
 
   const sender = Number(session?.userId);
 
@@ -83,7 +106,7 @@ const Message: React.FC<IProps> = ({ teamId }) => {
         </div>
       </div>
       <div style={{ display: teamId == 0 ? "none" : "block" }} className=" border-l min-h-screen relative">
-        <AddTeamMember showModal={showModal} setMemberCount={setMemberCount} setShowModal={setShowModal} teamId={teamId} teamName={teamName} />
+        <GroupMembers showModal={showModal} setMemberCount={setMemberCount} setShowModal={setShowModal} teamId={teamId} teamName={teamName} />
         <AddTeamMember
           setAddUserShowModal={setAddUserShowModal}
           setMemberCount={setMemberCount}
@@ -115,6 +138,7 @@ const Message: React.FC<IProps> = ({ teamId }) => {
           </div>
         </div>
         <div className="message-content ">
+          <EditMessageModal showEditModal={showEditModal} setShowEditModal={setShowEditModal} editMessage={editMessage} setEditMessage={setEditMessage} />
           <div ref={chatListRef} className="content relative max-h-[700px] md:max-h-[450px]  overflow-auto ">
             {data?.payload?.map(({ id, text, sender_id, POC_user }) => (
               <>
@@ -124,7 +148,22 @@ const Message: React.FC<IProps> = ({ teamId }) => {
                   </p>
                 )}
                 {!(sender === sender_id) && <p className="my-3 mx-2  max-w-xs rounded-2xl bg-[#f0f2f5] py-2 px-3 text-black">{text}</p>}
-                {sender === sender_id && <p className=" my-3 mx-2 ml-auto   max-w-xs rounded-2xl bg-blue-600 py-2 px-3 text-white">{text}</p>}
+                {sender === sender_id && (
+                  <div className="my-3 mx-2 ml-auto  max-w-xs flex justify-end items-center  gap-2">
+                    <div className=" rounded-2xl py-2 px-3 text-black cursor-pointer">
+                      {" "}
+                      <AiFillDelete onClick={()=>deleteMessageById.mutate(id)} className="cursor-pointer mb-1 text-red-400 hover:text-red-600" />
+                      <FaEdit
+                        onClick={() => {
+                          setShowEditModal(true);
+                          setEditMessage({ id, text });
+                        }}
+                        className="cursor-pointer  text-green-300 hover:text-green-600"
+                      />
+                    </div>
+                    <p className="  rounded-2xl bg-blue-600 py-2 px-3 text-white">{text}</p>
+                  </div>
+                )}
               </>
             ))}
           </div>

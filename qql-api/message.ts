@@ -36,3 +36,21 @@ export const CREATE_MESSAGE = gql`
     }
   }
 `;
+export const UPDATE_MESSAGE_BY_ID = gql`
+  mutation UPDATE_TEXT_BY_ID($id: bigint!, $updated_values: POC_message_set_input = {}) {
+    update_POC_message_by_pk(pk_columns: { id: $id }, _set: $updated_values) {
+      id
+      text
+      team_id
+      sender_id
+    }
+  }
+`;
+
+export const DELETE_MESSAGE_BY_ID = gql`
+  mutation DELETE_MESSAGE_BY_MESSAGE_ID($message_id: bigint!) {
+    delete_POC_message_by_pk(id: $message_id) {
+      id
+    }
+  }
+`;
