@@ -1,8 +1,9 @@
 /* eslint-disable @next/next/no-img-element */
+import { Transition } from "@headlessui/react";
 import { useSession } from "next-auth/react";
 import { useEffect, useRef, useState } from "react";
-import { AiFillDelete, AiOutlineUserAdd } from "react-icons/ai";
-import { BsFillArrowRightCircleFill } from "react-icons/bs";
+import { AiFillDelete } from "react-icons/ai";
+import { BsFillArrowRightCircleFill, BsThreeDotsVertical } from "react-icons/bs";
 import { FaEdit } from "react-icons/fa";
 import { useMutation, useQueryClient } from "react-query";
 import useFetch from "../../../../hooks/useFatch";
@@ -27,7 +28,9 @@ const Message: React.FC<IProps> = ({ teamId }) => {
   const [memberCount, setMemberCount] = useState(0);
   const [showEditModal, setShowEditModal] = useState(false);
   const [editMessage, setEditMessage] = useState<IMessage | any>({text:""} as IMessage );
-  
+  const [isVisible, setIsVisible] = useState(false);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+
 
   const { data } = useFetch<IMessage[]>(["getMessage", teamId], GET_MESSAGE, { team_id: teamId, limit: 1000, offset: 0 });
   const { data: teamDetails } = useFetch<ITeam[]>(["getTeam", teamId], GET_TEAM_ONE, { team_id: teamId });
@@ -90,6 +93,8 @@ const Message: React.FC<IProps> = ({ teamId }) => {
       behavior: "auto"
     });
   }
+
+
   return (
     <>
       <div style={{ display: teamId == 0 ? "block" : "none" }} className=" border-l flex h-screen  items-center justify-center">
@@ -119,27 +124,62 @@ const Message: React.FC<IProps> = ({ teamId }) => {
           <div className="nav-profile flex  justify-between gap-1 items-center">
             <div className=" flex cursor-pointer items-center justify-between  py-1 px-4  md:mr-3">
               <div className="flex items-center justify-between gap-x-3 ">
-                {/* <img src="https://i.ibb.co/jLk5rtx/jpg.jpg" alt="" className="h-12 w-12 rounded-full" /> */}
                 <div className="con-list-content text-left">
                   <p className=" text-lg font-semibold tracking-normal">{teamName}</p>
                   <p className=" text-gray-400">Active Now</p>
                 </div>
               </div>
             </div>
-            <div className="flex items-center" onClick={() => setAddUserShowModal(true)}>
+            {/* <div className="flex items-center" onClick={() => setAddUserShowModal(true)}>
               <AiOutlineUserAdd className="text-blue-500" />
               <button className=" text-blue-500  cursor-pointer ">Add Members</button>{" "}
-            </div>
-            <div className="pr-8 flex justify-center items-center">
+            </div> */}
+            {/* <div className="pr-8 flex justify-center items-center">
               <button className=" text-blue-500  cursor-pointer text-lg" onClick={handleShowModal}>
                 Team members ({memberCount || "..."})
               </button>
+            </div> */}
+            <div>
+              <BsThreeDotsVertical className="text-2xl  cursor-pointer mr-6" onClick={() => setIsOpen(!isOpen)} />
             </div>
           </div>
         </div>
         <div className="message-content ">
+          <Transition
+            show={isOpen}
+            enter="transition duration-100 ease-out"
+            enterFrom="transform scale-95 opacity-0"
+            enterTo="transform scale-100 opacity-100"
+            leave="transition duration-75 ease-out"
+            leaveFrom="transform scale-100 opacity-100"
+            leaveTo="transform scale-95 opacity-0"
+          >
+            <div
+              className="absolute right-0 w-56 mt-2 origin-top-right bg-white rounded-md shadow-lg z-10"
+              onMouseEnter={() => setIsOpen(true)}
+              onMouseLeave={() => setIsOpen(false)}
+            >
+              <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
+                <a href="#" className="block px-4 py-2 text-md text-blue-700 hover:bg-gray-100 hover:text-gray-900" role="menuitem" onClick={handleShowModal}>
+                  Members ({memberCount || "..."})
+                </a>
+                <a
+                  href="#"
+                  className="block px-4 py-2 text-md text-blue-700 hover:bg-gray-100 hover:text-gray-900"
+                  role="menuitem"
+                  onClick={() => setAddUserShowModal(true)}
+                >
+                 + Add New Member
+                </a>
+                <a href="#" className="block px-4 py-2 text-md text-blue-700 hover:bg-gray-100 hover:text-gray-900" role="menuitem">
+                  Delete Chat
+                </a>
+              </div>
+            </div>
+          </Transition>
           <EditMessageModal showEditModal={showEditModal} setShowEditModal={setShowEditModal} editMessage={editMessage} setEditMessage={setEditMessage} />
-          <div ref={chatListRef} className="content relative max-h-[700px] md:max-h-[450px]  overflow-auto ">
+
+          <div ref={chatListRef} className={`${isOpen && "-z-10"} content relative max-h-[700px] md:max-h-[450px]  overflow-auto `}>
             {data?.payload?.map(({ id, text, sender_id, POC_user }) => (
               <>
                 {!(sender === sender_id) && (
@@ -150,17 +190,20 @@ const Message: React.FC<IProps> = ({ teamId }) => {
                 {!(sender === sender_id) && <p className="my-3 mx-2  max-w-xs rounded-2xl bg-[#f0f2f5] py-2 px-3 text-black">{text}</p>}
                 {sender === sender_id && (
                   <div className="my-3 mx-2 ml-auto  max-w-xs flex justify-end items-center  gap-2">
-                    <div className=" rounded-2xl py-2 px-3 text-black cursor-pointer">
-                      {" "}
-                      <AiFillDelete onClick={()=>deleteMessageById.mutate(id)} className="cursor-pointer mb-1 text-red-400 hover:text-red-600" />
-                      <FaEdit
-                        onClick={() => {
-                          setShowEditModal(true);
-                          setEditMessage({ id, text });
-                        }}
-                        className="cursor-pointer  text-green-300 hover:text-green-600"
-                      />
-                    </div>
+                    {sender === sender_id && (
+                      <div className=" rounded-2xl py-2 px-3 text-black cursor-pointer">
+                        {" "}
+                        <AiFillDelete onClick={() => deleteMessageById.mutate(id)} className="cursor-pointer mb-1 text-red-400 hover:text-red-600" />
+                        <FaEdit
+                          onClick={() => {
+                            setShowEditModal(true);
+                            setEditMessage({ id, text });
+                          }}
+                          className="cursor-pointer  text-green-300 hover:text-green-600"
+                        />
+                      </div>
+                    )}
+
                     <p className="  rounded-2xl bg-blue-600 py-2 px-3 text-white">{text}</p>
                   </div>
                 )}

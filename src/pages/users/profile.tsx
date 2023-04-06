@@ -1,11 +1,12 @@
+import { Transition } from "@headlessui/react";
 import { useSession } from "next-auth/react";
+import { useState } from 'react';
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useMutation, useQueryClient } from "react-query";
 import useFetch from "../../../hooks/useFatch";
 import { GET_USER_BY_ID, UPDATE_USER_BY_ID } from "../../../qql-api/user";
 import { getGraphQLClient } from "../../../services/graphql";
 import { IUser } from "../../../tyeps";
-
 interface IProfile {
   name: String;
   email: String;
@@ -18,6 +19,8 @@ type Inputs = {
   mobile: string;
 };
 function Profile() {
+  
+    const [isOpen, setIsOpen] = useState<boolean>(false);
   const { data: session }: any = useSession();
   const { data: userProfile }: any = useFetch<IUser[]>(["getUserData", session?.userId], GET_USER_BY_ID, { user_id: 54 });
 
@@ -56,9 +59,55 @@ function Profile() {
   if (!userProfile?.payload?.id) {
     return <img className=" w-62 m-auto" src="https://upload.wikimedia.org/wikipedia/commons/b/b1/Loading_icon.gif?20151024034921" alt="" />;
   }
+
+
   return (
     <>
       <div>
+        <div className="relative">
+          <div
+            className="inline-flex justify-center items-center w-full px-4 py-2 text-sm font-medium text-gray-700 bg-white rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            onMouseEnter={() => setIsOpen(true)}
+            onMouseLeave={() => setIsOpen(false)}
+          >
+            Options
+            <svg className="-mr-1 ml-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+              <path
+                fillRule="evenodd"
+                d="M10.707 14.293a1 1 0 0 1-1.414 0l-4-4a1 1 0 0 1 1.414-1.414L10 11.586l3.293-3.293a1 1 0 0 1 1.414 1.414l-4 4z"
+                clipRule="evenodd"
+              />
+            </svg>
+          </div>
+          <Transition
+            show={isOpen}
+            enter="transition duration-100 ease-out"
+            enterFrom="transform scale-95 opacity-0"
+            enterTo="transform scale-100 opacity-100"
+            leave="transition duration-75 ease-out"
+            leaveFrom="transform scale-100 opacity-100"
+            leaveTo="transform scale-95 opacity-0"
+          >
+            <div
+              className="absolute right-0 w-56 mt-2 origin-top-right bg-white rounded-md shadow-lg"
+              onMouseEnter={() => setIsOpen(true)}
+              onMouseLeave={() => setIsOpen(false)}
+            >
+              <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
+                <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900" role="menuitem">
+                  Option 1
+                </a>
+                <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900" role="menuitem">
+                  Option 2
+                </a>
+                <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900" role="menuitem">
+                  Option 3
+                </a>
+              </div>
+            </div>
+          </Transition>
+        </div>
+
         <div className="image-url w-40 m-auto mt-12 ">
           <img
             src={session?.user?.image || "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTG6a6KfKK66Jy1eCuDau7yp2rb5dIfGvl45g&usqp=CAU"}

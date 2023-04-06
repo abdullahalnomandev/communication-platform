@@ -2,7 +2,7 @@ import gql from "graphql-tag";
 
 export const GET_MESSAGE = gql`
   query GET_MESSAGE($limit: Int = 10, $offset: Int = 0, $team_id: bigint!) {
-    payload: POC_message(limit: $limit, offset: $offset, where: { team_id: { _eq: $team_id } }) {
+    payload: POC_message(limit: $limit, offset: $offset, where: { team_id: { _eq: $team_id } }, order_by: { created_at: asc }) {
       id
       text
       sender_id
