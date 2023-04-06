@@ -2,9 +2,9 @@ import { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { ImCross } from "react-icons/im";
 import { useMutation, useQueryClient } from "react-query";
+import { CREATE_NEW_TEAM } from "../../../gql-api/team";
+import { GET_USERS_DATA } from "../../../gql-api/user";
 import useFetch from "../../../hooks/useFatch";
-import { CREATE_NEW_TEAM } from "../../../qql-api/team";
-import { GET_USERS_DATA } from "../../../qql-api/user";
 import { getGraphQLClient } from "../../../services/graphql";
 import { IUser } from "../../../tyeps";
 
@@ -51,7 +51,6 @@ const NewTeamModal: React.FC<IProps> = ({ showTeamModal, setShowTeamModal }) => 
         queryClient.invalidateQueries(["getTeams"]);
         setShowTeamModal(false);
         setLoading(false);
-        alert("Team created successfully");
       },
     });
   };

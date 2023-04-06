@@ -2,8 +2,8 @@
 import Head from "next/head";
 import { useState } from "react";
 import { useMutation, useQueryClient } from "react-query";
+import { DELETE_USER_BY_ID, GET_USERS_DATA } from "../../../gql-api/user";
 import useFetch from "../../../hooks/useFatch";
-import { DELETE_USER_BY_ID, GET_USERS_DATA } from "../../../qql-api/user";
 import { getGraphQLClient } from "../../../services/graphql";
 import { IUser } from "../../../tyeps";
 import AddUserModal from "../../components/Users/UserMutationModal";
@@ -13,7 +13,6 @@ const Users = () => {
   const [userId, setUserId] = useState<number | null | undefined>(null);
   const [userInfo, setUserInfo] = useState<IUser>({name:"",email:"",mobile:"",role:""} as IUser);
 
-  console.log("mobileKOY",userInfo);
   
   const deleteUserById = useMutation(
     async (id: number | undefined) => {
@@ -30,7 +29,6 @@ const Users = () => {
   const { data } = useFetch<IUser[]>(["getUserData", 11], GET_USERS_DATA, { limit: 20, offset: 0 });
   // const { data: getUser } = useFetch<IUser[]>(["findUserData", 11], FIND_USER_ONE, { email: "abdullahalnoman1512@gmail.com" });
 
-  console.log("getting user data", data);
 
   return (
     <>

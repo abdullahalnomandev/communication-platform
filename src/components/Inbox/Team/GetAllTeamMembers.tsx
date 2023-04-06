@@ -2,9 +2,9 @@ import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { ImCross } from "react-icons/im";
 import { useMutation, useQueryClient } from "react-query";
+import { INSERT_ACCOUNT_ONE } from "../../../../gql-api/account";
+import { DELETE_TEAM_MEMBER, GET_TEAM_MEMBERS } from "../../../../gql-api/user";
 import useFetch from "../../../../hooks/useFatch";
-import { INSERT_ACCOUNT_ONE } from "../../../../qql-api/account";
-import { DELETE_TEAM_MEMBER, GET_TEAM_MEMBERS } from "../../../../qql-api/user";
 import { getGraphQLClient } from "../../../../services/graphql";
 import { IAccount, ITeamMembers } from "../../../../tyeps";
 interface IProps {
@@ -48,7 +48,6 @@ const GroupMembers: React.FC<IProps> = ({ showModal, setShowModal, teamId, teamN
 
   const { data } = useFetch<ITeamMembers[]>(["geTemMembers", teamId], GET_TEAM_MEMBERS, { team_id: teamId, search_item: "%%" });
 
-  console.log("members", data, teamId);
 
   useEffect(() => {
     setMemberCount(data?.payload?.length as number);

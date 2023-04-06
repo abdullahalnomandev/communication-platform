@@ -62,3 +62,12 @@ export const CREATE_NEW_TEAM = gql`
     }
   }
 `;
+
+export const DELETE_TEAM_BY_TEAM_ID = gql`
+mutation DELETE_TEAM_BY_TEAM_ID($team_id: bigint!) {
+  delete_POC_team_by_pk(id: $team_id) {
+    id
+    name
+  }
+}
+`;

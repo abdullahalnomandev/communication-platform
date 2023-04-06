@@ -1,7 +1,7 @@
 import Jwt from "jsonwebtoken";
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
-import { FIND_USER_ONE } from "../../../../qql-api/user";
+import { FIND_USER_ONE } from "../../../../gql-api/user";
 import { getGraphQLClient } from "../../../../services/graphql";
 type IUser = {
   payload: {
@@ -62,7 +62,6 @@ export const authOptions = {
       const encodedToken = Jwt.sign(token, process.env.JWT_SECRET as string, {
         algorithm: "HS256",
       });
-      // console.log(session);
 
       session.token = encodedToken;
       session.userId = String(token.userId);

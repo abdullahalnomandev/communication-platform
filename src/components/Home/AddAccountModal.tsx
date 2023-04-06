@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useMutation, useQueryClient } from "react-query";
-import { INSERT_ACCOUNT_ONE } from "../../../qql-api/account";
+import { INSERT_ACCOUNT_ONE } from "../../../gql-api/account";
 import { getGraphQLClient } from "../../../services/graphql";
 import { IAccount } from "../../../tyeps";
 

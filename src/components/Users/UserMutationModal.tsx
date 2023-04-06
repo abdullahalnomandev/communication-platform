@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useMutation, useQueryClient } from "react-query";
-import { INSERT_USER_ONE, UPDATE_USER_BY_ID } from "../../../qql-api/user";
+import { INSERT_USER_ONE, UPDATE_USER_BY_ID } from "../../../gql-api/user";
 import { getGraphQLClient } from "../../../services/graphql";
 import { IUser } from "../../../tyeps";
 interface IProps {

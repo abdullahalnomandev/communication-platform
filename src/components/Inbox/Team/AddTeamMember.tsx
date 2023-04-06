@@ -2,10 +2,10 @@ import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { ImCross } from "react-icons/im";
 import { useMutation, useQueryClient } from "react-query";
+import { INSERT_ACCOUNT_ONE } from "../../../../gql-api/account";
+import { CREATE_TEAM_MEMBERS } from "../../../../gql-api/team";
+import { GET_ALL_USERS } from "../../../../gql-api/user";
 import useFetch from "../../../../hooks/useFatch";
-import { INSERT_ACCOUNT_ONE } from "../../../../qql-api/account";
-import { CREATE_TEAM_MEMBERS } from "../../../../qql-api/team";
-import { GET_ALL_USERS } from "../../../../qql-api/user";
 import { getGraphQLClient } from "../../../../services/graphql";
 import { IAccount, IUser } from "../../../../tyeps";
 interface IProps {

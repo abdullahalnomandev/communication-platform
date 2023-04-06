@@ -1,8 +1,8 @@
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { BsArrowRight } from "react-icons/bs";
+import { GET_TEAM_LIST } from "../../../gql-api/account";
 import useFetch from "../../../hooks/useFatch";
-import { GET_TEAM_LIST } from "../../../qql-api/account";
 import { ITeam } from "../../../tyeps";
 import AddAccountModal from "./AddAccountModal";
 const UserEntryPage = () => {

@@ -6,9 +6,9 @@ import { AiFillDelete } from "react-icons/ai";
 import { BsFillArrowRightCircleFill, BsThreeDotsVertical } from "react-icons/bs";
 import { FaEdit } from "react-icons/fa";
 import { useMutation, useQueryClient } from "react-query";
+import { CREATE_MESSAGE, DELETE_MESSAGE_BY_ID, GET_MESSAGE } from "../../../../gql-api/message";
+import { DELETE_TEAM_BY_TEAM_ID, GET_TEAM_ONE } from "../../../../gql-api/team";
 import useFetch from "../../../../hooks/useFatch";
-import { CREATE_MESSAGE, DELETE_MESSAGE_BY_ID, GET_MESSAGE } from "../../../../qql-api/message";
-import { GET_TEAM_ONE } from "../../../../qql-api/team";
 import { getGraphQLClient } from "../../../../services/graphql";
 import { IMessage, ITeam } from "../../../../tyeps";
 import AddTeamMember from "../Team/AddTeamMember";
@@ -65,6 +65,20 @@ const Message: React.FC<IProps> = ({ teamId }) => {
       {
         onSuccess: () => {
           queryClient.invalidateQueries(["getMessage"]);
+        }
+      }
+    );
+
+    // DELETE TEAM
+    const deleteTeamById = useMutation(
+      async (id: number | undefined) => {
+        const data = await(await getGraphQLClient()).request(DELETE_TEAM_BY_TEAM_ID, { team_id: id });
+        return data;
+      },
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries(["getTeams"]);
+          alert("Successfully deleted!");
         }
       }
     );
@@ -171,7 +185,10 @@ const Message: React.FC<IProps> = ({ teamId }) => {
                 >
                  + Add New Member
                 </a>
-                <a href="#" className="block px-4 py-2 text-md text-blue-700 hover:bg-gray-100 hover:text-gray-900" role="menuitem">
+                <a href="#" className="block px-4 py-2 text-md text-blue-700 hover:bg-gray-100 hover:text-gray-900" role="menuitem"
+                //  onClick={()=> deleteTeamById.mute(5)}
+                onClick={() => deleteTeamById.mutate(teamId)}
+                 >
                   Delete Chat
                 </a>
               </div>
@@ -179,7 +196,7 @@ const Message: React.FC<IProps> = ({ teamId }) => {
           </Transition>
           <EditMessageModal showEditModal={showEditModal} setShowEditModal={setShowEditModal} editMessage={editMessage} setEditMessage={setEditMessage} />
 
-          <div ref={chatListRef} className={`${isOpen && "-z-10"} content relative max-h-[700px] md:max-h-[450px]  overflow-auto `}>
+          <div ref={chatListRef} className={`${isOpen && "-z-10"} content relative max-h-[700px] md:max-h-[750px]  overflow-auto `}>
             {data?.payload?.map(({ id, text, sender_id, POC_user }) => (
               <>
                 {!(sender === sender_id) && (

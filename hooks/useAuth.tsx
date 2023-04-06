@@ -1,5 +1,5 @@
 import { useSession } from "next-auth/react";
-import { GET_USER_BY_ID } from "../qql-api/user";
+import { GET_USER_BY_ID } from "../gql-api/user";
 import { IUser } from "../tyeps";
 import useFetch from "./useFatch";
 

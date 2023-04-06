@@ -1,8 +1,8 @@
 import { useRouter } from "next/router";
 import { Dispatch, SetStateAction, useRef, useState } from "react";
 import { AiFillHome, AiOutlineSearch } from "react-icons/ai";
+import { GET_TEAMS } from "../../../../gql-api/team";
 import useFetch from "../../../../hooks/useFatch";
-import { GET_TEAMS } from "../../../../qql-api/team";
 import { ITeam } from "../../../../tyeps";
 
 interface IProps {
@@ -11,7 +11,7 @@ interface IProps {
 }
 
 const Group: React.FC<IProps> = ({ SetTeamId, setShowTeamModal }) => {
-  const { data } = useFetch<ITeam[]>(["getTeams", 99], GET_TEAMS, { limit: 20, offset: 0 });
+  const { data } = useFetch<ITeam[]>(["getTeams"], GET_TEAMS, { limit: 20, offset: 0 });
   const [isSearch, setIsSearch] = useState(true);
 
   const chatListRef = useRef(null);
@@ -33,7 +33,7 @@ const Group: React.FC<IProps> = ({ SetTeamId, setShowTeamModal }) => {
 
       {/* Conversations  */}
       {isSearch && (
-        <ul className=" mb-[-6] divide-y divide-gray-700 divide-inherit overflow-y-auto  max-h-[500px] ">
+        <ul className=" mb-[-6] divide-y divide-gray-700 divide-inherit overflow-y-auto  max-h-[550px] ">
           {data?.payload?.map(({ name, id, created_at, POC_messages }) => (
             <div key={id} onClick={() => SetTeamId(id)} className=" flex cursor-pointer items-center justify-between  py-2 px-2 hover:bg-[#f0f2f5] md:mr-3">
               <div key={id} className="flex items-center justify-between gap-x-3 ">

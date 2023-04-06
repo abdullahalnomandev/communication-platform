@@ -1,7 +1,8 @@
 
+import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useMutation, useQueryClient } from "react-query";
-import { UPDATE_MESSAGE_BY_ID } from "../../../../qql-api/message";
+import { UPDATE_MESSAGE_BY_ID } from "../../../../gql-api/message";
 import { getGraphQLClient } from "../../../../services/graphql";
 import { IMessage } from "../../../../tyeps";
 interface IProps {
@@ -15,7 +16,7 @@ type FormValues = {
 };
 const EditMessageModal: React.FC<IProps> = ({ showEditModal, setShowEditModal, editMessage, setEditMessage }) => {
   const queryClient = useQueryClient();
-  //   const [loadding, setLoadding] = useState<boolean>(false);
+    const [loadding, setLoadding] = useState<boolean>(false);
 
   const { register, handleSubmit, reset } = useForm<FormValues>();
 
@@ -24,14 +25,12 @@ const EditMessageModal: React.FC<IProps> = ({ showEditModal, setShowEditModal, e
       return data;
     };
 
-  //   console.log("userId", userId);
 
   //   // CREATE
     const { error, isError, isSuccess, mutate } = useMutation(updateMessage);
 
     const createUser = (message: IMessage) => {
-      // setLoadding(true);
-      console.log("message",message);
+      setLoadding(true);
       
 
       mutate({ id: editMessage.id, updated_values: message }, {
@@ -39,14 +38,13 @@ const EditMessageModal: React.FC<IProps> = ({ showEditModal, setShowEditModal, e
           queryClient.invalidateQueries(["getMessage"]);
           setShowEditModal(false);
           reset();
-          // setLoadding(false);
+          setLoadding(false);
         }
       });
     };
 
   const onSubmit: SubmitHandler<FormValues> = (data) => {
     createUser(data as IMessage);
-    console.log("editMESSAGE", data);
 
   };
 
@@ -95,12 +93,14 @@ const EditMessageModal: React.FC<IProps> = ({ showEditModal, setShowEditModal, e
                       >
                         Close
                       </button>
-                      <input
+                    {!loadding &&
+                        <input
                         type="submit"
                         value="Edit Message"
                         className="bg-blue-500 text-white active:bg-blue-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 cursor-pointer"
                       />
-                      {/* {loadding && (
+                    }
+                      {loadding && (
                         <div role="status">
                           <svg
                             aria-hidden="true"
@@ -120,7 +120,7 @@ const EditMessageModal: React.FC<IProps> = ({ showEditModal, setShowEditModal, e
                           </svg>
                           <span className="sr-only">Loading...</span>
                         </div>
-                      )} */}
+                      )}
                     </div>
                   </form>
                 </div>

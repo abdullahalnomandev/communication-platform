@@ -4,7 +4,6 @@ import { useRouter } from "next/router";
 import Home from "../components/Home";
 const HomePage = () => {
   const { data: session } = useSession();
-  console.log("sss", session);
 
   const router = useRouter();
 

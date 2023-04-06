@@ -20,7 +20,6 @@ export const updateSession = async (accountId: string) => {
 
   // const decodedToken = await Jwt.decode(accessToken, process.env.JWT_SECRET as any);
   const decodedToken: any = Jwt.decode(accessToken, { complete: true })?.payload;
-  console.log("decoded token", decodedToken);
 
   const updatedSession: any = { ...decodedToken, accountId };
 
@@ -28,7 +27,6 @@ export const updateSession = async (accountId: string) => {
   //   algorithm: "HS256"
   // });
   const encoded = await axios.post("http://localhost:3000/api/jwt_update", updatedSession);
-  console.log("ENCODE", encoded.data.token);
 
   const res = await signIn("credentials", {
     email: "esha@gmail.ckom",
@@ -36,7 +34,5 @@ export const updateSession = async (accountId: string) => {
     redirect: false,
   });
 
-  console.log("res", res);
 
-  console.log(await getSession());
 };
