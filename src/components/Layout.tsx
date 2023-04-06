@@ -4,8 +4,6 @@ import NavBar from "./NavBar";
 const Layout = ({ children }: any) => {
   const router = useRouter();
 
-  console.log("router", router);
-
   useEffect(() => {
     if (router.route === "/inbox") {
     }

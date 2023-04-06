@@ -19,7 +19,7 @@ type Inputs = {
 };
 function Profile() {
   
-    const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
   const { data: session }: any = useSession();
   const { data: userProfile }: any = useFetch<IUser[]>(["getUserData", session?.userId], GET_USER_BY_ID, { user_id: 54 });
 

@@ -8,7 +8,6 @@ const useAuth = () => {
 
   const { data: userProfile }: any = useFetch<IUser[]>(["getUserData", session?.userId], GET_USER_BY_ID, { user_id: session?.userId });
 
-  console.log("userProfile", userProfile?.payload);
   if(userProfile){
   return {
     id:userProfile?.payload?.id ,
