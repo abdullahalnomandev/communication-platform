@@ -11,7 +11,6 @@ const UserEntryPage = () => {
 
   const { data } = useFetch<ITeam[]>(["getTeams", 99], GET_TEAM_LIST, {});
 
-  console.log("team", data);
 
   return (
     <div>

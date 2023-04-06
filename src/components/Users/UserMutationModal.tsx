@@ -29,14 +29,12 @@ const AddUserModal: React.FC<IProps> = ({ setUserInfo, showModal, setShowModal, 
     return data;
   };
 
-  console.log("userId", userId);
 
   // CREATE
   const { error, isError, isSuccess, mutate } = useMutation(insertData);
 
   const createUser = (user: IUser) => {
     setLoadding(true);
-    console.log("user", user);
 
     mutate(!userId ? user : { user_id: userId, updated_value: user }, {
       onSuccess: () => {
@@ -55,11 +53,9 @@ const AddUserModal: React.FC<IProps> = ({ setUserInfo, showModal, setShowModal, 
 
   const onSubmit: SubmitHandler<FormValues> = (data) => {
     createUser(data);
-    console.log("59",data);
     
   };
 
-  console.log("userInfo", userInfo);
 
   return (
     <>
