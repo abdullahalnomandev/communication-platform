@@ -1,12 +1,12 @@
 import { test } from "@playwright/test";
+import { LoginPage } from '../../pages/login';
 
 test.describe("My bologs testing", async () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("https://naturalblog.netlify.app/");
-    await page.getByRole("link", { name: "Admin" }).click();
-    await page.getByPlaceholder("Email").fill("test@test.com");
-    await page.getByPlaceholder("password").fill("#2021dev");
-    await page.getByRole("button", { name: "Log In" }).click();
+    const login = new LoginPage(page)
+  
+    await login.gotoLoginPage()
+    await login.login("test@test.com","#2021dev")
   });
 
   test.afterAll(async ({ page }) => {
