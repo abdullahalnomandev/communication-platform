@@ -10,8 +10,8 @@ test("FIrst testing",async ({page})=>{
     await page.getByRole('textbox', { name: 'Enter your password' }).click();
     await page.getByRole('textbox', { name: 'Enter your password' }).fill('01732750974');
     await page.getByRole('button', { name: 'Next' }).click();
-    await page.pause();
-
+    // await page.pause();
+    
 })
 
 
