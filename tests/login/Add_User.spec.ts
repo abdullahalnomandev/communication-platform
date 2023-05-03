@@ -23,3 +23,38 @@ test("Add User",async ({page})=>{
 
 })
 
+// New Idea
+
+
+test.beforeEach(async ({ page }) => {
+  //url:  https://social-engagement-new-design.up.railway.app/auth/login
+});
+
+test.afterEach(async ({ page }) => {
+  //code will be here
+});
+
+//add an agent
+test("Add Agent", async ({ page }) => {
+  //code will be here
+});
+
+//change the status of an agent
+test("Change the status of an agent", async ({ page }) => {
+  //code will be here
+});
+
+//search an agent
+test("Search an agent", async ({ page }) => {
+  //code will be here
+});
+
+//edit an agent
+test("edit an agent", async ({ page }) => {
+  //code will be here
+});
+
+//delete an agent
+test("delete an agent", async ({ page }) => {
+  //code will be here
+});
